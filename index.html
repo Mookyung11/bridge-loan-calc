@@ -98,8 +98,9 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#fce4ec;color:#c62828">KRW</span></div>
         <div class="grid4">
-          <div class="field"><label>발행일</label><input type="date" id="gm-s" value="2025-01-24"/></div>
-          <div class="field"><label>만기일</label><input type="date" id="gm-e" value="2027-01-24"/></div>
+          <div class="field"><label>발행일</label><input type="date" id="gm-s" value="2024-01-24"/></div>
+          <div class="field"><label>만기일 (5-1회)</label><input type="date" id="gm-e1" value="2027-01-24"/></div>
+          <div class="field"><label>만기일 (5-2회)</label><input type="date" id="gm-e2" value="2029-01-24"/></div>
           <div class="field"><label>이자주기</label>
             <select id="gm-freq">
               <option value="1">매월</option>
@@ -135,7 +136,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#fff8e1;color:#f57f17">JPY</span></div>
         <div class="grid4">
-          <div class="field"><label>발행일</label><input type="date" id="sam-s" value="2025-11-01"/></div>
+          <div class="field"><label>발행일</label><input type="date" id="sam-s" value="2023-11-01"/></div>
           <div class="field"><label>이자주기</label>
             <select id="sam-freq">
               <option value="1">매월</option>
@@ -209,7 +210,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#fce4ec;color:#c62828">KRW</span></div>
         <div class="grid4">
-          <div class="field"><label>실행일</label><input type="date" id="fac-s" value="2026-01-12"/></div>
+          <div class="field"><label>실행일</label><input type="date" id="fac-s" value="2025-11-12"/></div>
           <div class="field"><label>만기일</label><input type="date" id="fac-e" value="2028-11-12"/></div>
           <div class="field"><label>이자주기</label>
             <select id="fac-freq">
@@ -308,7 +309,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="card-title">기본 조건 <span class="badge" style="background:#e3f0ff;color:#1565c0">USD</span></div>
         <div class="grid5">
           <div class="field"><label>실행일</label><input type="date" id="sc-s" value="2026-03-26"/></div>
-          <div class="field"><label>만기일</label><input type="date" id="sc-e" value="2026-06-25"/></div>
+          <div class="field"><label>만기일</label><input type="date" id="sc-e" value="2026-04-30"/></div>
           <div class="field"><label>이자주기</label>
             <select id="sc-freq">
               <option value="1" selected>매월</option>
@@ -506,21 +507,21 @@ function copyActiveView(panelId){
 // ══ 공모사채 ══
 function calcGongmo(){
   const s=new Date(document.getElementById('gm-s').value);
-  const e=new Date(document.getElementById('gm-e').value);
+  const e1=new Date(document.getElementById('gm-e1').value);
+  const e2=new Date(document.getElementById('gm-e2').value);
   const freq=+document.getElementById('gm-freq').value;
   const p1=+document.getElementById('gm1-p').value, r1=+document.getElementById('gm1-r').value/100;
   const p2=+document.getElementById('gm2-p').value, r2=+document.getElementById('gm2-r').value/100;
-  // 사채: 연이율 ÷ 이자지급횟수 × 원금 (일수 미사용)
-  const perYear = freq===0 ? 1 : 12/freq; // 연간 횟수 (만기일시=1회)
-  const i1unit=rd3(p1*r1/perYear), i2unit=rd3(p2*r2/perYear);
-  const segs=makePaySegs(s,e,freq);
-  let rows='', tot1=0, tot2=0;
+  const perYear=freq===0?1:12/freq;
+  const maxE=e1>e2?e1:e2;
+  const segs=makePaySegs(s,maxE,freq);
+  let rows='',tot1=0,tot2=0;
   segs.forEach((seg,i)=>{
-    // 만기일시는 전체 기간 1회, 그 외 매 구간 동일 금액
-    const i1= freq===0 ? rd3(p1*r1) : i1unit;
-    const i2= freq===0 ? rd3(p2*r2) : i2unit;
+    const i1=seg.start<e1?(freq===0?rd3(p1*r1):rd3(p1*r1/perYear)):0;
+    const i2=seg.start<e2?(freq===0?rd3(p2*r2):rd3(p2*r2/perYear)):0;
+    if(i1===0&&i2===0) return;
     tot1+=i1; tot2+=i2;
-    rows+=`<tr class="pay-row"><td>${i+1}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>-</td><td class="td-r">${fmt3(i1)}</td><td class="td-r">${fmt3(i2)}</td><td class="td-r">${fmt3(i1+i2)}</td></tr>`;
+    rows+=`<tr class="pay-row"><td>${i+1}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>-</td><td class="td-r">${i1?fmt3(i1):'-'}</td><td class="td-r">${i2?fmt3(i2):'-'}</td><td class="td-r">${fmt3(i1+i2)}</td></tr>`;
   });
   rows+=`<tr class="total-row"><td colspan="3">합계</td><td class="td-r">${fmt3(tot1)}</td><td class="td-r">${fmt3(tot2)}</td><td class="td-r">${fmt3(tot1+tot2)}</td></tr>`;
   document.getElementById('gm-result').innerHTML=rows;
