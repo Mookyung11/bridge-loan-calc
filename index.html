@@ -297,7 +297,8 @@ function switchTab(id){
   document.getElementById('panel-'+id).classList.add('active');
 }
 
-const fmt=(n,d=2)=>n==null||isNaN(n)?'-':n.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const roundDown3=(n)=>Math.floor(n*1000)/1000;
+const fmt=(n,d=3)=>n==null||isNaN(n)?'-':n.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fmtKRW=(n)=>n==null||isNaN(n)?'-':Math.round(n).toLocaleString('ko-KR');
 const fmtD=(d)=>d.toISOString().slice(0,10);
 function days(a,b){return Math.round((new Date(b)-new Date(a))/86400000)+1} // 말일 산입
@@ -312,7 +313,7 @@ function calcBond(){
   const r1=+document.getElementById('bond1-r').value/100;
   const r2=+document.getElementById('bond2-r').value/100;
   const d=days(s,e);
-  const i1=p1*r1*d/365, i2=p2*r2*d/365;
+  const i1=roundDown3(p1*r1*d/365), i2=roundDown3(p2*r2*d/365);
   document.getElementById('bond-result').innerHTML=`
     <tr><td>5-1회 (한투증권 외)</td><td>${fmtKRW(p1)}</td><td>${(r1*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i1)}</td></tr>
     <tr><td>5-2회 (한투증권 외)</td><td>${fmtKRW(p2)}</td><td>${(r2*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i2)}</td></tr>
