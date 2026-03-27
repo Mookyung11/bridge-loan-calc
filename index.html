@@ -10,15 +10,15 @@ body{font-family:'Segoe UI',sans-serif;background:#f0f2f7;color:#222}
 header{background:#1e3a5f;color:#fff;padding:18px 28px}
 header h1{font-size:19px;font-weight:700}
 header p{font-size:11px;color:#9ab;margin-top:3px}
+/* 메인 탭 */
 .tabs{display:flex;flex-wrap:wrap;gap:3px;padding:14px 20px 0;background:#1e3a5f}
 .tab{padding:8px 15px;border-radius:8px 8px 0 0;cursor:pointer;font-size:12px;font-weight:600;color:#9ab;background:#16304f;border:none;transition:all .15s}
 .tab:hover{color:#fff}
 .tab.active{background:#f0f2f7;color:#1e3a5f}
-.content{max-width:860px;margin:0 auto;padding:20px 14px}
+.content{max-width:960px;margin:0 auto;padding:20px 14px}
 .panel{display:none}.panel.active{display:block}
 .card{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:18px;margin-bottom:14px}
 .card-title{font-size:12px;font-weight:700;color:#1e3a5f;margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid #e8edf5}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
 .field label{font-size:11px;color:#666;display:block;margin-bottom:3px}
@@ -26,37 +26,38 @@ header p{font-size:11px;color:#9ab;margin-top:3px}
 .field input{width:100%;border:1px solid #ddd;border-radius:6px;padding:6px 9px;font-size:12px;outline:none;transition:border .2s}
 .field input:focus{border-color:#3b6fd4}
 .field input[type=date]{text-align:left}
-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+/* 서브 탭 */
+.sub-tabs{display:flex;gap:6px;margin-bottom:14px}
+.sub-tab{padding:6px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:#666;background:#f0f2f7;border:none}
+.sub-tab.active{background:#1e3a5f;color:#fff}
+.sub-panel{display:none}.sub-panel.active{display:block}
+table{width:100%;border-collapse:collapse;font-size:12px}
 th{background:#1e3a5f;color:#fff;padding:8px 10px;text-align:center;font-weight:600}
 td{padding:7px 10px;text-align:center;border-bottom:1px solid #eee}
 tr:nth-child(even) td{background:#f7f9ff}
 .total-row td{background:#fff8e1!important;font-weight:700}
+.payment-row td{background:#e8f5e9!important}
+.accrual-row td{background:#f3f0ff!important}
 .td-r{text-align:right}
-.btns{display:flex;gap:8px;margin-top:14px}
+.btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
 .btn-calc{background:#1e3a5f;color:#fff}
 .btn-copy{background:#455a7a;color:#fff}
-.btn-csv{background:#2e7d32;color:#fff}
 .fx-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
 .fx-row label{font-size:11px;color:#666}
 .fx-row input{border:1px solid #ddd;border-radius:6px;padding:5px 8px;font-size:12px;width:120px;outline:none}
 .fx-row .fx-hint{font-size:10px;color:#888}
 .tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;margin-left:6px}
 .tag-usd{background:#e3f0ff;color:#1565c0}
-.tag-eur{background:#e8f5e9;color:#2e7d32}
-.tag-jpy{background:#fff8e1;color:#f57f17}
-.tag-krw{background:#fce4ec;color:#c62828}
-.sub-row{font-size:11px;color:#666;margin-top:6px}
 .notice{font-size:11px;color:#e07b00;background:#fff8e1;border-radius:6px;padding:8px 12px;margin-bottom:12px}
+.legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#555}
+.legend-box{width:14px;height:14px;border-radius:3px}
 </style>
 </head>
 <body>
-<header>
-  <h1>차입금 이자 계산 대시보드</h1>
-  <p>기준금리 입력 후 [계산] 클릭 · 원화 환산은 선택 입력</p>
-</header>
 
-<!-- 비밀번호 화면 -->
+<!-- 비밀번호 -->
 <div id="pw-screen" style="position:fixed;inset:0;background:#1e3a5f;display:flex;align-items:center;justify-content:center;z-index:999">
   <div style="background:#fff;border-radius:14px;padding:40px 36px;text-align:center;width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
     <div style="font-size:28px;margin-bottom:8px">🔒</div>
@@ -65,12 +66,14 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
     <input id="pw-input" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')checkPw()"
       style="width:100%;border:1px solid #ddd;border-radius:8px;padding:10px 12px;font-size:14px;outline:none;margin-bottom:10px;text-align:center"/>
     <div id="pw-error" style="font-size:11px;color:#e53935;margin-bottom:8px;min-height:16px"></div>
-    <button onclick="checkPw()"
-      style="width:100%;background:#1e3a5f;color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer">
-      확인
-    </button>
+    <button onclick="checkPw()" style="width:100%;background:#1e3a5f;color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer">확인</button>
   </div>
 </div>
+
+<header>
+  <h1>차입금 이자 계산 대시보드</h1>
+  <p>기준금리 입력 후 [계산] 클릭 · 이자납입 / 월결산 두 가지 뷰 제공</p>
+</header>
 
 <div class="tabs">
   <button class="tab active" onclick="switchTab('bond')">공모사채</button>
@@ -85,7 +88,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 
 <!-- ===== 공모사채 ===== -->
 <div id="panel-bond" class="panel active">
-  <div class="notice">고정금리 · KRW · 365일 기준 · 이자납입일: 1/24, 4/24, 7/24, 10/24 (분기)</div>
+  <div class="notice">고정금리 · KRW · 365일 · 이자납입일: 1/24, 4/24, 7/24, 10/24 (분기)</div>
   <div class="card">
     <div class="card-title">기본 조건</div>
     <div class="grid4">
@@ -96,58 +99,76 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="field"><label>5-1회 금리 (%)</label><input type="number" id="bond1-r" value="3.792" step="0.001"/></div>
       <div class="field"><label>5-2회 금리 (%)</label><input type="number" id="bond2-r" value="3.836" step="0.001"/></div>
     </div>
+    <div class="btns"><button class="btn btn-calc" onclick="calcBond()">계산</button></div>
   </div>
   <div class="card">
-    <div class="card-title">계산 결과</div>
-    <table><thead><tr><th>구분</th><th>원금</th><th>금리</th><th>일수</th><th>이자 (KRW)</th></tr></thead>
-    <tbody id="bond-result"></tbody></table>
-    <div class="btns">
-      <button class="btn btn-calc" onclick="calcBond()">계산</button>
-      <button class="btn btn-copy" onclick="copyTSV('bond-result','bond-total')">📋 엑셀 복사</button>
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSub('bond','payment')">💰 이자납입</button>
+      <button class="sub-tab" onclick="switchSub('bond','accrual')">📒 월결산 미지급비용</button>
     </div>
+    <div id="bond-sub-payment" class="sub-panel active">
+      <table><thead><tr><th>구분</th><th>납입일</th><th>계산기간</th><th>일수</th><th>이자 (KRW)</th></tr></thead>
+      <tbody id="bond-payment"></tbody></table>
+    </div>
+    <div id="bond-sub-accrual" class="sub-panel">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
+        <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 인식</div>
+      </div>
+      <table><thead><tr><th>결산월</th><th>인식기간</th><th>일수</th><th>5-1회 (KRW)</th><th>5-2회 (KRW)</th><th>합계 (KRW)</th><th>비고</th></tr></thead>
+      <tbody id="bond-accrual"></tbody></table>
+    </div>
+    <div class="btns"><button class="btn btn-copy" onclick="copyActive('bond')">📋 엑셀 복사</button></div>
   </div>
 </div>
 
 <!-- ===== 시설자금대출 ===== -->
 <div id="panel-facility" class="panel">
-  <div class="notice">고정금리 · KRW · 365일 기준 · 이자납입일: 매달 12일 (산업은행)</div>
+  <div class="notice">고정금리 · KRW · 365일 · 이자납입일: 매달 12일</div>
   <div class="card">
     <div class="card-title">기본 조건</div>
     <div class="grid3">
-      <div class="field"><label>계산 시작일</label><input type="date" id="fac-s" value="2026-03-12"/></div>
-      <div class="field"><label>계산 종료일</label><input type="date" id="fac-e" value="2026-04-12"/></div>
+      <div class="field"><label>계산 시작일</label><input type="date" id="fac-s" value="2026-01-12"/></div>
+      <div class="field"><label>계산 종료일</label><input type="date" id="fac-e" value="2026-06-12"/></div>
       <div class="field"><label>원금 (KRW)</label><input type="number" id="fac-p" value="100000000000"/></div>
       <div class="field"><label>금리 (%)</label><input type="number" id="fac-r" value="2.640" step="0.001"/></div>
     </div>
+    <div class="btns"><button class="btn btn-calc" onclick="calcFacility()">계산</button></div>
   </div>
   <div class="card">
-    <div class="card-title">계산 결과</div>
-    <table><thead><tr><th>계산시작일</th><th>계산종료일</th><th>원금</th><th>금리</th><th>일수</th><th>이자 (KRW)</th></tr></thead>
-    <tbody id="fac-result"></tbody></table>
-    <div class="btns">
-      <button class="btn btn-calc" onclick="calcFacility()">계산</button>
-      <button class="btn btn-copy" onclick="copyTSV('fac-result','fac-total')">📋 엑셀 복사</button>
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSub('fac','payment')">💰 이자납입</button>
+      <button class="sub-tab" onclick="switchSub('fac','accrual')">📒 월결산 미지급비용</button>
     </div>
+    <div id="fac-sub-payment" class="sub-panel active">
+      <table><thead><tr><th>납입일</th><th>계산기간</th><th>일수</th><th>이자 (KRW)</th></tr></thead>
+      <tbody id="fac-payment"></tbody></table>
+    </div>
+    <div id="fac-sub-accrual" class="sub-panel">
+      <table><thead><tr><th>결산월</th><th>인식기간</th><th>일수</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
+      <tbody id="fac-accrual"></tbody></table>
+    </div>
+    <div class="btns"><button class="btn btn-copy" onclick="copyActive('fac')">📋 엑셀 복사</button></div>
   </div>
 </div>
 
 <!-- ===== Samurai Bond ===== -->
 <div id="panel-samurai" class="panel">
-  <div class="notice">고정금리 · JPY · 365일 기준 · 이자납입일: 5/1, 11/1 (반기)</div>
+  <div class="notice">고정금리 · JPY · 365일 · 이자납입일: 5/1, 11/1 (반기)</div>
   <div class="card">
-    <div class="card-title">기본 조건 <span class="tag tag-jpy">JPY</span></div>
-    <div class="grid2">
+    <div class="card-title">기본 조건 <span class="tag" style="background:#fff8e1;color:#f57f17">JPY</span></div>
+    <div class="grid3">
       <div class="field"><label>계산 시작일</label><input type="date" id="sam-s" value="2026-05-01"/></div>
       <div class="field"><label>계산 종료일</label><input type="date" id="sam-e" value="2026-11-01"/></div>
     </div>
-    <div style="margin-top:10px">
+    <div style="margin-top:10px;overflow-x:auto">
       <table>
         <thead><tr><th>트랜치</th><th>원금 (JPY)</th><th>금리 (%)</th><th>만기일</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td><input type="number" id="sam1-p" value="14000000000" style="width:140px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam1-r" value="1.142" step="0.001" style="width:80px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2027.04.30</td></tr>
-          <tr><td>2</td><td><input type="number" id="sam2-p" value="1500000000" style="width:140px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam2-r" value="1.432" step="0.001" style="width:80px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2028.11.01</td></tr>
-          <tr><td>3</td><td><input type="number" id="sam3-p" value="1500000000" style="width:140px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam3-r" value="1.755" step="0.001" style="width:80px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2030.11.01</td></tr>
-          <tr><td>4</td><td><input type="number" id="sam4-p" value="3000000000" style="width:140px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam4-r" value="2.414" step="0.001" style="width:80px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2035.11.01</td></tr>
+          <tr><td>1</td><td><input type="number" id="sam1-p" value="14000000000" style="width:130px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam1-r" value="1.142" step="0.001" style="width:70px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2027.04.30</td></tr>
+          <tr><td>2</td><td><input type="number" id="sam2-p" value="1500000000" style="width:130px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam2-r" value="1.432" step="0.001" style="width:70px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2028.11.01</td></tr>
+          <tr><td>3</td><td><input type="number" id="sam3-p" value="1500000000" style="width:130px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam3-r" value="1.755" step="0.001" style="width:70px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2030.11.01</td></tr>
+          <tr><td>4</td><td><input type="number" id="sam4-p" value="3000000000" style="width:130px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam4-r" value="2.414" step="0.001" style="width:70px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2035.11.01</td></tr>
         </tbody>
       </table>
     </div>
@@ -156,54 +177,67 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <input type="number" id="sam-fx" placeholder="예: 9.2" step="0.01"/>
       <span class="fx-hint">입력 시 원화 환산 표시</span>
     </div>
+    <div class="btns"><button class="btn btn-calc" onclick="calcSamurai()">계산</button></div>
   </div>
   <div class="card">
-    <div class="card-title">계산 결과</div>
-    <table><thead><tr><th>트랜치</th><th>원금 (JPY)</th><th>금리</th><th>일수</th><th>이자 (JPY)</th><th>이자 (KRW)</th></tr></thead>
-    <tbody id="sam-result"></tbody></table>
-    <div class="btns">
-      <button class="btn btn-calc" onclick="calcSamurai()">계산</button>
-      <button class="btn btn-copy" onclick="copyTSV('sam-result','sam-total')">📋 엑셀 복사</button>
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSub('sam','payment')">💰 이자납입</button>
+      <button class="sub-tab" onclick="switchSub('sam','accrual')">📒 월결산 미지급비용</button>
     </div>
+    <div id="sam-sub-payment" class="sub-panel active">
+      <table><thead><tr><th>납입일</th><th>계산기간</th><th>일수</th><th>트랜치1</th><th>트랜치2</th><th>트랜치3</th><th>트랜치4</th><th>합계 (JPY)</th><th>합계 (KRW)</th></tr></thead>
+      <tbody id="sam-payment"></tbody></table>
+    </div>
+    <div id="sam-sub-accrual" class="sub-panel">
+      <table><thead><tr><th>결산월</th><th>인식기간</th><th>일수</th><th>트랜치1</th><th>트랜치2</th><th>트랜치3</th><th>트랜치4</th><th>합계 (JPY)</th><th>합계 (KRW)</th><th>비고</th></tr></thead>
+      <tbody id="sam-accrual"></tbody></table>
+    </div>
+    <div class="btns"><button class="btn btn-copy" onclick="copyActive('sam')">📋 엑셀 복사</button></div>
   </div>
 </div>
 
 <!-- ===== CACIB ===== -->
 <div id="panel-cacib" class="panel">
-  <div class="notice">EURIBOR 1M + 57bps · EUR · Actual/360 · 이자납입일: 매달 23일 · 기준금리: 실행일 2영업일 전 EURIBOR 확정</div>
+  <div class="notice">EURIBOR 1M + 57bps · EUR · Actual/360 · 이자납입일: 매달 23일 · 기준금리: 실행일 2영업일 전 EURIBOR</div>
   <div class="card">
-    <div class="card-title">기본 조건 <span class="tag tag-eur">EUR</span></div>
+    <div class="card-title">기본 조건 <span class="tag" style="background:#e8f5e9;color:#2e7d32">EUR</span></div>
     <div class="grid3">
-      <div class="field"><label>계산 시작일</label><input type="date" id="cac-s" value="2026-03-23"/></div>
+      <div class="field"><label>계산 시작일</label><input type="date" id="cac-s" value="2026-01-23"/></div>
       <div class="field"><label>계산 종료일</label><input type="date" id="cac-e" value="2026-04-23"/></div>
       <div class="field"><label>원금 (EUR)</label><input type="number" id="cac-p" value="563000000"/></div>
       <div class="field">
         <label>EURIBOR 1M (%)</label>
         <input type="number" id="cac-euribor" value="" step="0.001" placeholder="직접 입력"/>
-        <div class="hint" style="font-size:10px;color:#e07b00;margin-top:2px">실행일 2영업일 전 고시 금리</div>
+        <div class="hint">실행일 2영업일 전 고시 금리</div>
       </div>
       <div class="field"><label>Spread (bps)</label><input type="number" id="cac-spread" value="57"/></div>
     </div>
     <div class="fx-row">
       <label>EUR/KRW 환율 (선택)</label>
       <input type="number" id="cac-fx" placeholder="예: 1480" step="1"/>
-      <span class="fx-hint">입력 시 원화 환산 표시</span>
     </div>
+    <div class="btns"><button class="btn btn-calc" onclick="calcCACIB()">계산</button></div>
   </div>
   <div class="card">
-    <div class="card-title">계산 결과</div>
-    <table><thead><tr><th>계산시작일</th><th>계산종료일</th><th>원금 (EUR)</th><th>이율</th><th>일수</th><th>이자 (EUR)</th><th>이자 (KRW)</th></tr></thead>
-    <tbody id="cac-result"></tbody></table>
-    <div class="btns">
-      <button class="btn btn-calc" onclick="calcCACIB()">계산</button>
-      <button class="btn btn-copy" onclick="copyTSV('cac-result','cac-total')">📋 엑셀 복사</button>
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSub('cac','payment')">💰 이자납입</button>
+      <button class="sub-tab" onclick="switchSub('cac','accrual')">📒 월결산 미지급비용</button>
     </div>
+    <div id="cac-sub-payment" class="sub-panel active">
+      <table><thead><tr><th>납입일</th><th>계산기간</th><th>이율</th><th>일수</th><th>이자 (EUR)</th><th>이자 (KRW)</th></tr></thead>
+      <tbody id="cac-payment"></tbody></table>
+    </div>
+    <div id="cac-sub-accrual" class="sub-panel">
+      <table><thead><tr><th>결산월</th><th>인식기간</th><th>일수</th><th>미지급비용 (EUR)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
+      <tbody id="cac-accrual"></tbody></table>
+    </div>
+    <div class="btns"><button class="btn btn-copy" onclick="copyActive('cac')">📋 엑셀 복사</button></div>
   </div>
 </div>
 
 <!-- ===== SC ===== -->
 <div id="panel-sc" class="panel">
-  <div class="notice">SOFR 1M + 40bps(0~1개월) / +45bps(이후) · USD · Actual/360 · 개시일 포함 · 말일산입 · 이자납입일: 매달 26일 · 기준금리: 실행일 SOFR 확정</div>
+  <div class="notice">SOFR 1M + 40bps(0~1개월) / +45bps(이후) · USD · Actual/360 · 개시일 포함 · 말일산입 · 이자납입일: 매달 26일 · 기준금리: 실행일 SOFR</div>
   <div class="card">
     <div class="card-title">기본 조건 <span class="tag tag-usd">USD</span></div>
     <div class="grid3">
@@ -212,8 +246,8 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="field"><label>원금 (USD)</label><input type="number" id="sc-p" value="500000000"/></div>
       <div class="field">
         <label>SOFR 1M (%)</label>
-        <input type="number" id="sc-sofr" value="3.676" step="0.001"/>
-        <div class="hint" style="font-size:10px;color:#e07b00;margin-top:2px">실행일 SOFR 고시 금리</div>
+        <input type="number" id="sc-sofr" value="3.67636" step="0.00001"/>
+        <div class="hint">실행일 SOFR 고시 금리</div>
       </div>
       <div class="field"><label>Spread 0~1개월 (bps)</label><input type="number" id="sc-sp1" value="40"/></div>
       <div class="field"><label>Spread 1개월~만기 (bps)</label><input type="number" id="sc-sp2" value="45"/></div>
@@ -223,21 +257,32 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <input type="number" id="sc-fx" placeholder="예: 1380" step="1"/>
       <span class="fx-hint">입력 시 원화 환산 표시</span>
     </div>
+    <div class="btns"><button class="btn btn-calc" onclick="calcSC()">계산</button></div>
   </div>
   <div class="card">
-    <div class="card-title">계산 결과</div>
-    <table><thead><tr><th>구간</th><th>시작일</th><th>종료일</th><th>이율</th><th>일수</th><th>이자 (USD)</th><th>이자 (KRW)</th></tr></thead>
-    <tbody id="sc-result"></tbody></table>
-    <div class="btns">
-      <button class="btn btn-calc" onclick="calcSC()">계산</button>
-      <button class="btn btn-copy" onclick="copyTSV('sc-result','sc-total')">📋 엑셀 복사</button>
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSub('sc','payment')">💰 이자납입</button>
+      <button class="sub-tab" onclick="switchSub('sc','accrual')">📒 월결산 미지급비용</button>
     </div>
+    <div id="sc-sub-payment" class="sub-panel active">
+      <table><thead><tr><th>납입일</th><th>계산기간</th><th>이율</th><th>일수</th><th>이자 (USD)</th><th>이자 (KRW)</th></tr></thead>
+      <tbody id="sc-payment"></tbody></table>
+    </div>
+    <div id="sc-sub-accrual" class="sub-panel">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월 (납입액)</div>
+        <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 인식</div>
+      </div>
+      <table><thead><tr><th>결산월</th><th>인식기간</th><th>이율</th><th>일수</th><th>미지급비용 (USD)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
+      <tbody id="sc-accrual"></tbody></table>
+    </div>
+    <div class="btns"><button class="btn btn-copy" onclick="copyActive('sc')">📋 엑셀 복사</button></div>
   </div>
 </div>
 
 <!-- ===== HSBC ===== -->
 <div id="panel-hsbc" class="panel">
-  <div class="notice">SOFR 3M + 55bps · USD · Actual/360 · 개시일 포함 · 말일산입 · 이자납입일: 3개월마다 26일 · 기준금리: 실행일 SOFR 확정</div>
+  <div class="notice">SOFR 3M + 55bps · USD · Actual/360 · 개시일 포함 · 말일산입 · 이자납입일: 3개월마다 26일 · 기준금리: 실행일 SOFR</div>
   <div class="card">
     <div class="card-title">기본 조건 <span class="tag tag-usd">USD</span></div>
     <div class="grid3">
@@ -246,185 +291,347 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="field"><label>원금 (USD)</label><input type="number" id="hsbc-p" value="300000000"/></div>
       <div class="field">
         <label>SOFR 3M (%)</label>
-        <input type="number" id="hsbc-sofr" value="" step="0.001" placeholder="직접 입력"/>
-        <div class="hint" style="font-size:10px;color:#e07b00;margin-top:2px">실행일 SOFR 고시 금리</div>
+        <input type="number" id="hsbc-sofr" value="" step="0.00001" placeholder="직접 입력"/>
+        <div class="hint">실행일 SOFR 고시 금리</div>
       </div>
       <div class="field"><label>Spread (bps)</label><input type="number" id="hsbc-spread" value="55"/></div>
     </div>
     <div class="fx-row">
       <label>USD/KRW 환율 (선택)</label>
       <input type="number" id="hsbc-fx" placeholder="예: 1380" step="1"/>
-      <span class="fx-hint">입력 시 원화 환산 표시</span>
     </div>
+    <div class="btns"><button class="btn btn-calc" onclick="calcHSBC()">계산</button></div>
   </div>
   <div class="card">
-    <div class="card-title">계산 결과</div>
-    <table><thead><tr><th>구간</th><th>시작일</th><th>종료일</th><th>이율</th><th>일수</th><th>이자 (USD)</th><th>이자 (KRW)</th></tr></thead>
-    <tbody id="hsbc-result"></tbody></table>
-    <div class="btns">
-      <button class="btn btn-calc" onclick="calcHSBC()">계산</button>
-      <button class="btn btn-copy" onclick="copyTSV('hsbc-result','hsbc-total')">📋 엑셀 복사</button>
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSub('hsbc','payment')">💰 이자납입</button>
+      <button class="sub-tab" onclick="switchSub('hsbc','accrual')">📒 월결산 미지급비용</button>
     </div>
+    <div id="hsbc-sub-payment" class="sub-panel active">
+      <table><thead><tr><th>납입일</th><th>계산기간</th><th>이율</th><th>일수</th><th>이자 (USD)</th><th>이자 (KRW)</th></tr></thead>
+      <tbody id="hsbc-payment"></tbody></table>
+    </div>
+    <div id="hsbc-sub-accrual" class="sub-panel">
+      <table><thead><tr><th>결산월</th><th>인식기간</th><th>이율</th><th>일수</th><th>미지급비용 (USD)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
+      <tbody id="hsbc-accrual"></tbody></table>
+    </div>
+    <div class="btns"><button class="btn btn-copy" onclick="copyActive('hsbc')">📋 엑셀 복사</button></div>
   </div>
 </div>
 
-</div><!-- /content -->
+</div>
 
 <script>
+// ── 비밀번호 ──
 function checkPw(){
-  const pw = document.getElementById('pw-input').value;
-  if(pw === 'naver1234'){
+  if(document.getElementById('pw-input').value==='naver1234'){
     document.getElementById('pw-screen').style.display='none';
     sessionStorage.setItem('auth','ok');
   } else {
     document.getElementById('pw-error').textContent='비밀번호가 올바르지 않습니다.';
     document.getElementById('pw-input').value='';
-    document.getElementById('pw-input').focus();
   }
 }
-// 이미 인증된 경우 바로 통과
-if(sessionStorage.getItem('auth')==='ok'){
-  document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('pw-screen').style.display='none';
-  });
+if(sessionStorage.getItem('auth')==='ok') document.getElementById('pw-screen').style.display='none';
+
+// ── 유틸 ──
+const rd3=n=>Math.floor(n*1000)/1000;
+const fmt3=n=>n==null||isNaN(n)?'-':n.toLocaleString('ko-KR',{minimumFractionDigits:3,maximumFractionDigits:3});
+const fmt0=n=>n==null||isNaN(n)?'-':Math.round(n).toLocaleString('ko-KR');
+const fmtD=d=>d.toISOString().slice(0,10);
+
+function daysInc(a,b){ // 말일 산입 (양끝 포함)
+  return Math.round((new Date(b)-new Date(a))/86400000)+1;
 }
+function addMonths(d,m){const r=new Date(d);r.setMonth(r.getMonth()+m);return r;}
+function monthEnd(d){return new Date(d.getFullYear(),d.getMonth()+1,0);}
+
+// 월말 기준 구간 분리 (시작~종료, 말일산입)
+function splitByMonthEnd(start, end) {
+  const segs=[];
+  let cur=new Date(start);
+  const endD=new Date(end);
+  while(cur<=endD){
+    const me=monthEnd(cur);
+    const segEnd=me<endD?me:endD;
+    segs.push({start:new Date(cur), end:new Date(segEnd)});
+    cur=new Date(segEnd); cur.setDate(cur.getDate()+1);
+  }
+  return segs;
+}
+
+function ym(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
+
+// ── 탭 전환 ──
 function switchTab(id){
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    const ids=['bond','facility','samurai','cacib','sc','hsbc'];
-    t.classList.toggle('active', ids[i]===id);
-  });
+  const ids=['bond','facility','samurai','cacib','sc','hsbc'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',ids[i]===id));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
 }
+function switchSub(prefix,sub){
+  ['payment','accrual'].forEach(s=>{
+    document.getElementById(`${prefix}-sub-${s}`)?.classList.toggle('active',s===sub);
+  });
+  document.querySelectorAll(`#panel-${prefix==='fac'?'facility':prefix==='cac'?'cacib':prefix} .sub-tab`).forEach((t,i)=>{
+    t.classList.toggle('active',['payment','accrual'][i]===sub);
+  });
+}
+// sub-tab 클릭 공통
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('sub-tab')){
+    const tabs=[...e.target.parentElement.children];
+    tabs.forEach(t=>t.classList.remove('active'));
+    e.target.classList.add('active');
+    const panel=e.target.closest('.card');
+    panel.querySelectorAll('.sub-panel').forEach((p,i)=>p.classList.toggle('active',i===tabs.indexOf(e.target)));
+  }
+});
 
-const roundDown3=(n)=>Math.floor(n*1000)/1000;
-const fmt=(n,d=3)=>n==null||isNaN(n)?'-':n.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d});
-const fmtKRW=(n)=>n==null||isNaN(n)?'-':Math.round(n).toLocaleString('ko-KR');
-const fmtD=(d)=>d.toISOString().slice(0,10);
-function days(a,b){return Math.round((new Date(b)-new Date(a))/86400000)+1} // 말일 산입
-function addMonths(d,m){const r=new Date(d);r.setMonth(r.getMonth()+m);return r}
+// ── 엑셀 복사 ──
+function copyActive(prefix){
+  const card=document.querySelector(`#panel-${prefix==='fac'?'facility':prefix==='cac'?'cacib':prefix} .sub-panel.active`);
+  if(!card){return;}
+  const rows=[...card.querySelectorAll('tr')];
+  const tsv=rows.map(r=>[...r.querySelectorAll('th,td')].map(c=>c.innerText.replace(/\n/g,' ')).join('\t')).join('\n');
+  navigator.clipboard.writeText(tsv).then(()=>alert('복사 완료! 엑셀에서 Ctrl+V 하세요.'));
+}
 
-// ── 공모사채 ──
+// ══════════════════════════════════════════
+// 공모사채
+// ══════════════════════════════════════════
 function calcBond(){
-  const s=document.getElementById('bond-s').value;
-  const e=document.getElementById('bond-e').value;
+  const s=new Date(document.getElementById('bond-s').value);
+  const e=new Date(document.getElementById('bond-e').value);
   const p1=+document.getElementById('bond1-p').value;
   const p2=+document.getElementById('bond2-p').value;
   const r1=+document.getElementById('bond1-r').value/100;
   const r2=+document.getElementById('bond2-r').value/100;
-  const d=days(s,e);
-  const i1=roundDown3(p1*r1*d/365), i2=roundDown3(p2*r2*d/365);
-  document.getElementById('bond-result').innerHTML=`
-    <tr><td>5-1회 (한투증권 외)</td><td>${fmtKRW(p1)}</td><td>${(r1*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i1)}</td></tr>
-    <tr><td>5-2회 (한투증권 외)</td><td>${fmtKRW(p2)}</td><td>${(r2*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i2)}</td></tr>
-    <tr class="total-row"><td colspan="4">합계</td><td class="td-r">${fmt(i1+i2)}</td></tr>`;
+
+  // 납입: 전체 기간 한 번
+  const d=daysInc(fmtD(s),fmtD(e));
+  const i1=rd3(p1*r1*d/365), i2=rd3(p2*r2*d/365);
+  document.getElementById('bond-payment').innerHTML=`
+    <tr class="payment-row"><td>5-1회</td><td>${fmtD(e)}</td><td>${fmtD(s)} ~ ${fmtD(e)}</td><td>${d}일</td><td class="td-r">${fmt3(i1)}</td></tr>
+    <tr class="payment-row"><td>5-2회</td><td>${fmtD(e)}</td><td>${fmtD(s)} ~ ${fmtD(e)}</td><td>${d}일</td><td class="td-r">${fmt3(i2)}</td></tr>
+    <tr class="total-row"><td colspan="4">합계</td><td class="td-r">${fmt3(i1+i2)}</td></tr>`;
+
+  // 월결산
+  const segs=splitByMonthEnd(s,e);
+  let rows='', tot1=0, tot2=0;
+  segs.forEach(seg=>{
+    const sd=daysInc(fmtD(seg.start),fmtD(seg.end));
+    const si1=rd3(p1*r1*sd/365), si2=rd3(p2*r2*sd/365);
+    tot1+=si1; tot2+=si2;
+    const isPayment=fmtD(seg.end)===fmtD(e);
+    const cls=isPayment?'payment-row':'accrual-row';
+    const note=isPayment?'납입월':'미지급비용';
+    rows+=`<tr class="${cls}"><td>${ym(seg.end)}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${sd}일</td><td class="td-r">${fmt3(si1)}</td><td class="td-r">${fmt3(si2)}</td><td class="td-r">${fmt3(si1+si2)}</td><td>${note}</td></tr>`;
+  });
+  rows+=`<tr class="total-row"><td colspan="3">합계</td><td class="td-r">${fmt3(tot1)}</td><td class="td-r">${fmt3(tot2)}</td><td class="td-r">${fmt3(tot1+tot2)}</td><td></td></tr>`;
+  document.getElementById('bond-accrual').innerHTML=rows;
 }
 
-// ── 시설자금대출 ──
+// ══════════════════════════════════════════
+// 시설자금대출
+// ══════════════════════════════════════════
 function calcFacility(){
-  const s=document.getElementById('fac-s').value;
-  const e=document.getElementById('fac-e').value;
+  const s=new Date(document.getElementById('fac-s').value);
+  const e=new Date(document.getElementById('fac-e').value);
   const p=+document.getElementById('fac-p').value;
   const r=+document.getElementById('fac-r').value/100;
-  const d=days(s,e);
-  const i=p*r*d/365;
-  document.getElementById('fac-result').innerHTML=`
-    <tr><td>${s}</td><td>${e}</td><td>${fmtKRW(p)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i)}</td></tr>
-    <tr class="total-row"><td colspan="5">합계</td><td class="td-r">${fmt(i)}</td></tr>`;
+
+  // 납입: 월 단위로 분리
+  let payRows='', cur=new Date(s);
+  while(cur<e){
+    const next=addMonths(cur,1);
+    const segEnd=next>e?e:next;
+    const d=daysInc(fmtD(cur),fmtD(segEnd));
+    const i=rd3(p*r*d/365);
+    payRows+=`<tr class="payment-row"><td>${fmtD(segEnd)}</td><td>${fmtD(cur)} ~ ${fmtD(segEnd)}</td><td>${d}일</td><td class="td-r">${fmt3(i)}</td></tr>`;
+    cur=new Date(segEnd); cur.setDate(cur.getDate()+1);
+  }
+  document.getElementById('fac-payment').innerHTML=payRows;
+
+  // 월결산
+  const segs=splitByMonthEnd(s,e);
+  let accRows='', tot=0;
+  // 납입일 목록
+  const payDates=[];
+  let c2=new Date(s);
+  while(c2<e){const nx=addMonths(c2,1);const se=nx>e?e:nx;payDates.push(fmtD(se));c2=new Date(se);c2.setDate(c2.getDate()+1);}
+
+  segs.forEach(seg=>{
+    const sd=daysInc(fmtD(seg.start),fmtD(seg.end));
+    const si=rd3(p*r*sd/365);
+    tot+=si;
+    const isPayment=payDates.includes(fmtD(seg.end));
+    const cls=isPayment?'payment-row':'accrual-row';
+    accRows+=`<tr class="${cls}"><td>${ym(seg.end)}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${sd}일</td><td class="td-r">${fmt3(si)}</td><td>${isPayment?'납입월':'미지급비용'}</td></tr>`;
+  });
+  accRows+=`<tr class="total-row"><td colspan="3">합계</td><td class="td-r">${fmt3(tot)}</td><td></td></tr>`;
+  document.getElementById('fac-accrual').innerHTML=accRows;
 }
 
-// ── Samurai Bond ──
+// ══════════════════════════════════════════
+// Samurai Bond
+// ══════════════════════════════════════════
 function calcSamurai(){
-  const s=document.getElementById('sam-s').value;
-  const e=document.getElementById('sam-e').value;
+  const s=new Date(document.getElementById('sam-s').value);
+  const e=new Date(document.getElementById('sam-e').value);
   const fx=+document.getElementById('sam-fx').value||null;
   const ps=[1,2,3,4].map(i=>+document.getElementById(`sam${i}-p`).value);
   const rs=[1,2,3,4].map(i=>+document.getElementById(`sam${i}-r`).value/100);
-  const d=days(s,e);
-  let rows='', total=0;
-  ps.forEach((p,i)=>{
-    const interest=p*rs[i]*d/365;
-    total+=interest;
-    const krw=fx?fmt(interest*fx):'-';
-    rows+=`<tr><td>${i+1}</td><td>${fmt(p)}</td><td>${(rs[i]*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(interest)}</td><td class="td-r">${krw}</td></tr>`;
+  const d=daysInc(fmtD(s),fmtD(e));
+
+  // 납입
+  const iArr=ps.map((p,i)=>rd3(p*rs[i]*d/365));
+  const tot=iArr.reduce((a,b)=>a+b,0);
+  const krw=fx?fmt0(tot*fx):'-';
+  document.getElementById('sam-payment').innerHTML=`
+    <tr class="payment-row"><td>${fmtD(e)}</td><td>${fmtD(s)} ~ ${fmtD(e)}</td><td>${d}일</td>
+    ${iArr.map(i=>`<td class="td-r">${fmt3(i)}</td>`).join('')}
+    <td class="td-r">${fmt3(tot)}</td><td class="td-r">${krw}</td></tr>`;
+
+  // 월결산
+  const segs=splitByMonthEnd(s,e);
+  let rows='', totals=new Array(4).fill(0), grandTot=0;
+  segs.forEach(seg=>{
+    const sd=daysInc(fmtD(seg.start),fmtD(seg.end));
+    const siArr=ps.map((p,i)=>rd3(p*rs[i]*sd/365));
+    const st=siArr.reduce((a,b)=>a+b,0);
+    siArr.forEach((v,i)=>totals[i]+=v);
+    grandTot+=st;
+    const isPayment=fmtD(seg.end)===fmtD(e);
+    const cls=isPayment?'payment-row':'accrual-row';
+    rows+=`<tr class="${cls}"><td>${ym(seg.end)}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${sd}일</td>
+      ${siArr.map(v=>`<td class="td-r">${fmt3(v)}</td>`).join('')}
+      <td class="td-r">${fmt3(st)}</td><td class="td-r">${fx?fmt0(st*fx):'-'}</td><td>${isPayment?'납입월':'미지급비용'}</td></tr>`;
   });
-  rows+=`<tr class="total-row"><td colspan="4">합계</td><td class="td-r">${fmt(total)}</td><td class="td-r">${fx?fmt(total*fx):'-'}</td></tr>`;
-  document.getElementById('sam-result').innerHTML=rows;
+  rows+=`<tr class="total-row"><td colspan="3">합계</td>${totals.map(v=>`<td class="td-r">${fmt3(v)}</td>`).join('')}<td class="td-r">${fmt3(grandTot)}</td><td class="td-r">${fx?fmt0(grandTot*fx):'-'}</td><td></td></tr>`;
+  document.getElementById('sam-accrual').innerHTML=rows;
 }
 
-// ── CACIB ──
+// ══════════════════════════════════════════
+// CACIB
+// ══════════════════════════════════════════
 function calcCACIB(){
-  const s=document.getElementById('cac-s').value;
-  const e=document.getElementById('cac-e').value;
+  const s=new Date(document.getElementById('cac-s').value);
+  const e=new Date(document.getElementById('cac-e').value);
   const p=+document.getElementById('cac-p').value;
   const euribor=+document.getElementById('cac-euribor').value;
   const sp=+document.getElementById('cac-spread').value/10000;
   const fx=+document.getElementById('cac-fx').value||null;
   const r=euribor/100+sp;
-  const d=days(s,e);
-  const i=p*r*d/360;
-  const krw=fx?fmt(i*fx):'-';
-  document.getElementById('cac-result').innerHTML=`
-    <tr><td>${s}</td><td>${e}</td><td>${fmt(p)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i,2)}</td><td class="td-r">${krw}</td></tr>
-    <tr class="total-row"><td colspan="5">합계</td><td class="td-r">${fmt(i,2)}</td><td class="td-r">${krw}</td></tr>`;
+
+  // 납입: 월 단위
+  let payRows='', cur=new Date(s);
+  while(cur<e){
+    const next=addMonths(cur,1);
+    const segEnd=next>e?e:next;
+    const d=daysInc(fmtD(cur),fmtD(segEnd));
+    const i=rd3(p*r*d/360);
+    payRows+=`<tr class="payment-row"><td>${fmtD(segEnd)}</td><td>${fmtD(cur)} ~ ${fmtD(segEnd)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt3(i)}</td><td class="td-r">${fx?fmt0(i*fx):'-'}</td></tr>`;
+    cur=new Date(segEnd); cur.setDate(cur.getDate()+1);
+  }
+  document.getElementById('cac-payment').innerHTML=payRows;
+
+  // 월결산
+  const segs=splitByMonthEnd(s,e);
+  let accRows='', tot=0;
+  segs.forEach(seg=>{
+    const sd=daysInc(fmtD(seg.start),fmtD(seg.end));
+    const si=rd3(p*r*sd/360);
+    tot+=si;
+    const me=monthEnd(seg.end); 
+    const isMonthEnd=fmtD(seg.end)===fmtD(me)||fmtD(seg.end)===fmtD(e);
+    accRows+=`<tr class="accrual-row"><td>${ym(seg.end)}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${sd}일</td><td class="td-r">${fmt3(si)}</td><td class="td-r">${fx?fmt0(si*fx):'-'}</td><td>미지급비용</td></tr>`;
+  });
+  accRows+=`<tr class="total-row"><td colspan="3">합계</td><td class="td-r">${fmt3(tot)}</td><td class="td-r">${fx?fmt0(tot*fx):'-'}</td><td></td></tr>`;
+  document.getElementById('cac-accrual').innerHTML=accRows;
 }
 
-// ── SC Term Loan ──
+// ══════════════════════════════════════════
+// SC Term Loan
+// ══════════════════════════════════════════
 function calcSC(){
-  const s=document.getElementById('sc-s').value;
-  const e=document.getElementById('sc-e').value;
+  const s=new Date(document.getElementById('sc-s').value);
+  const e=new Date(document.getElementById('sc-e').value);
   const p=+document.getElementById('sc-p').value;
   const sofr=+document.getElementById('sc-sofr').value;
   const sp1=+document.getElementById('sc-sp1').value/10000;
   const sp2=+document.getElementById('sc-sp2').value/10000;
   const fx=+document.getElementById('sc-fx').value||null;
-  const m1e=addMonths(new Date(s),1);
-  const m2s=new Date(m1e); m2s.setDate(m2s.getDate()+1);
+  const m1e=addMonths(s,1); // 1개월 응당일
   const r1=sofr/100+sp1, r2=sofr/100+sp2;
-  const d1=days(s,fmtD(m1e)), d2=days(fmtD(m2s),e);
-  const i1=p*r1*d1/360, i2=p*r2*d2/360;
-  const krw1=fx?fmt(i1*fx):'-', krw2=fx?fmt(i2*fx):'-', krwT=fx?fmt((i1+i2)*fx):'-';
-  document.getElementById('sc-result').innerHTML=`
-    <tr><td>0~1개월</td><td>${s}</td><td>${fmtD(m1e)}</td><td>${(r1*100).toFixed(3)}%</td><td>${d1}일</td><td class="td-r">${fmt(i1,2)}</td><td class="td-r">${krw1}</td></tr>
-    <tr><td>1개월~만기</td><td>${fmtD(m2s)}</td><td>${e}</td><td>${(r2*100).toFixed(3)}%</td><td>${d2}일</td><td class="td-r">${fmt(i2,2)}</td><td class="td-r">${krw2}</td></tr>
-    <tr class="total-row"><td colspan="4">합계</td><td>${d1+d2}일</td><td class="td-r">${fmt(i1+i2,2)}</td><td class="td-r">${krwT}</td></tr>`;
+
+  function rateAt(d){return new Date(d)<=m1e?r1:r2;}
+
+  // 납입: 매달 26일 기준 구간
+  let payRows='', cur=new Date(s);
+  while(cur<e){
+    const next=addMonths(cur,1);
+    const segEnd=next>e?e:next;
+    const r=rateAt(cur);
+    const d=daysInc(fmtD(cur),fmtD(segEnd));
+    const i=rd3(p*r*d/360);
+    payRows+=`<tr class="payment-row"><td>${fmtD(segEnd)}</td><td>${fmtD(cur)} ~ ${fmtD(segEnd)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt3(i)}</td><td class="td-r">${fx?fmt0(i*fx):'-'}</td></tr>`;
+    cur=new Date(segEnd); cur.setDate(cur.getDate()+1);
+  }
+  document.getElementById('sc-payment').innerHTML=payRows;
+
+  // 월결산
+  const segs=splitByMonthEnd(s,e);
+  let accRows='', tot=0;
+  segs.forEach(seg=>{
+    const r=rateAt(seg.start);
+    const sd=daysInc(fmtD(seg.start),fmtD(seg.end));
+    const si=rd3(p*r*sd/360);
+    tot+=si;
+    const me=monthEnd(seg.end);
+    const isMonthEnd=fmtD(seg.end)===fmtD(me);
+    const note=isMonthEnd?'미지급비용':'말일';
+    accRows+=`<tr class="accrual-row"><td>${ym(seg.end)}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${(r*100).toFixed(3)}%</td><td>${sd}일</td><td class="td-r">${fmt3(si)}</td><td class="td-r">${fx?fmt0(si*fx):'-'}</td><td>미지급비용</td></tr>`;
+  });
+  accRows+=`<tr class="total-row"><td colspan="4">합계</td><td class="td-r">${fmt3(tot)}</td><td class="td-r">${fx?fmt0(tot*fx):'-'}</td><td></td></tr>`;
+  document.getElementById('sc-accrual').innerHTML=accRows;
 }
 
-// ── HSBC Term Loan ──
+// ══════════════════════════════════════════
+// HSBC Term Loan
+// ══════════════════════════════════════════
 function calcHSBC(){
-  const s=document.getElementById('hsbc-s').value;
-  const e=document.getElementById('hsbc-e').value;
+  const s=new Date(document.getElementById('hsbc-s').value);
+  const e=new Date(document.getElementById('hsbc-e').value);
   const p=+document.getElementById('hsbc-p').value;
   const sofr=+document.getElementById('hsbc-sofr').value;
   const sp=+document.getElementById('hsbc-spread').value/10000;
   const fx=+document.getElementById('hsbc-fx').value||null;
   const r=sofr/100+sp;
-  // 3개월마다 구간 분리
-  let rows='', cur=new Date(s), totalI=0, totalD=0, seg=1;
-  while(cur<new Date(e)){
-    const next=addMonths(cur,3);
-    const segEnd=next>new Date(e)?new Date(e):next;
-    // 마지막 구간 아니면 segEnd는 응당일, 그 다음날부터 새 구간
-    const isLast=segEnd>=new Date(e);
-    const segEndAdj=isLast?new Date(e):new Date(segEnd.getTime()-86400000);
-    const d=days(fmtD(cur),fmtD(isLast?new Date(e):segEnd));
-    const i=p*r*d/360;
-    totalI+=i; totalD+=d;
-    const krw=fx?fmt(i*fx):'-';
-    rows+=`<tr><td>${seg}구간</td><td>${fmtD(cur)}</td><td>${fmtD(isLast?new Date(e):segEnd)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i,2)}</td><td class="td-r">${krw}</td></tr>`;
-    cur=new Date(segEnd); cur.setDate(cur.getDate()+1);
-    seg++;
-    if(seg>20) break;
-  }
-  rows+=`<tr class="total-row"><td colspan="4">합계</td><td>${totalD}일</td><td class="td-r">${fmt(totalI,2)}</td><td class="td-r">${fx?fmt(totalI*fx):'-'}</td></tr>`;
-  document.getElementById('hsbc-result').innerHTML=rows;
-}
 
-// ── 엑셀 복사 ──
-function copyTSV(tbodyId){
-  const rows=[...document.getElementById(tbodyId).querySelectorAll('tr')];
-  const tsv=rows.map(r=>[...r.querySelectorAll('td')].map(c=>c.innerText).join('\t')).join('\n');
-  navigator.clipboard.writeText(tsv).then(()=>alert('복사 완료! 엑셀에서 Ctrl+V 하세요.'));
+  // 납입: 3개월마다
+  let payRows='', cur=new Date(s);
+  while(cur<e){
+    const next=addMonths(cur,3);
+    const segEnd=next>e?e:next;
+    const d=daysInc(fmtD(cur),fmtD(segEnd));
+    const i=rd3(p*r*d/360);
+    payRows+=`<tr class="payment-row"><td>${fmtD(segEnd)}</td><td>${fmtD(cur)} ~ ${fmtD(segEnd)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt3(i)}</td><td class="td-r">${fx?fmt0(i*fx):'-'}</td></tr>`;
+    cur=new Date(segEnd); cur.setDate(cur.getDate()+1);
+  }
+  document.getElementById('hsbc-payment').innerHTML=payRows;
+
+  // 월결산
+  const segs=splitByMonthEnd(s,e);
+  let accRows='', tot=0;
+  segs.forEach(seg=>{
+    const sd=daysInc(fmtD(seg.start),fmtD(seg.end));
+    const si=rd3(p*r*sd/360);
+    tot+=si;
+    accRows+=`<tr class="accrual-row"><td>${ym(seg.end)}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${(r*100).toFixed(3)}%</td><td>${sd}일</td><td class="td-r">${fmt3(si)}</td><td class="td-r">${fx?fmt0(si*fx):'-'}</td><td>미지급비용</td></tr>`;
+  });
+  accRows+=`<tr class="total-row"><td colspan="4">합계</td><td class="td-r">${fmt3(tot)}</td><td class="td-r">${fx?fmt0(tot*fx):'-'}</td><td></td></tr>`;
+  document.getElementById('hsbc-accrual').innerHTML=accRows;
 }
 </script>
 </body>
