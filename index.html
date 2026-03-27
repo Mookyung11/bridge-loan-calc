@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SC USD Bridge Loan 이자 계산기</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f6fa; padding: 32px 16px; color: #222; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); max-width: 720px; margin: 0 auto; padding: 32px; }
+    h2 { font-size: 22px; font-weight: 700; color: #1e3a5f; margin-bottom: 4px; }
+    .sub { font-size: 12px; color: #888; margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+    label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
+    input { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 7px 10px; font-size: 13px; text-align: right; outline: none; transition: border 0.2s; }
+    input[type="date"] { text-align: left; }
+    input:focus { border-color: #3b6fd4; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #1e3a5f; color: #fff; padding: 9px 12px; text-align: center; }
+    td { padding: 9px 12px; text-align: center; border-bottom: 1px solid #eee; }
+    tr:nth-child(odd) td { background: #f7f9ff; }
+    .total td { background: #fff8e1 !important; font-weight: 700; }
+    .td-right { text-align: right; }
+    .btns { display: flex; gap: 10px; margin-top: 20px; }
+    button { padding: 9px 18px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-copy { background: #1e3a5f; color: #fff; }
+    .btn-csv  { background: #2e7d32; color: #fff; }
+    .note { font-size: 11px; color: #aaa; margin-top: 10px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h2>SC USD Bridge Loan 이자 계산기</h2>
+  <p class="sub">기준: Actual/360 · 개시일 당일 포함 · 말일 산입</p>
+
+  <div class="grid">
+    <div><label>대출원금 (USD)</label><input type="number" id="principal" value="500000000" oninput="calc()"></div>
+    <div><label>실행일</label><input type="date" id="startDate" value="2026-03-26" oninput="calc()"></div>
+    <div><label>만기일</label><input type="date" id="maturityDate" value="2026-06-25" oninput="calc()"></div>
+    <div><label>SOFR 1M (%)</label><input type="number" id="sofr" value="3.676" step="0.001" oninput="calc()"></div>
+    <div><label>Spread 0~1개월 (bps)</label><input type="number" id="spread1" value="40" step="1" oninput="calc()"></div>
+    <div><label>Spread 1개월~만기 (bps)</label><input type="number" id="spread2" value="45" step="1" oninput="calc()"></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>구간</th><th>계산시작일</th><th>계산종료일</th><th>이율</th><th>일수</th><th>이자금액 (USD)</th></tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <div class="btns">
+    <button class="btn-copy" onclick="copyTSV()">📋 엑셀 복사</button>
+    <button class="btn-csv"  onclick="downloadCSV()">⬇️ CSV 다운로드</button>
+  </div>
+  <p class="note">* 이자 = 원금 × 이율 × 일수 / 360</p>
+</div>
+
+<script>
+  let rows = [];
+
+  function fmt(n) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtDate(d) {
+    return d.toISOString().slice(0, 10);
+  }
+  function addMonths(date, m) {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + m);
+    return d;
+  }
+  function daysBetween(a, b) {
+    const ms = new Date(b) - new Date(a);
+    return Math.round(ms / 86400000) + 1;
+  }
+
+  function calc() {
+    const principal = Number(document.getElementById('principal').value);
+    const sofr      = Number(document.getElementById('sofr').value);
+    const sp1       = Number(document.getElementById('spread1').value) / 100;
+    const sp2       = Number(document.getElementById('spread2').value) / 100;
+    const start     = document.getElementById('startDate').value;
+    const maturity  = document.getElementById('maturityDate').value;
+
+    if (!start || !maturity) return;
+
+    const s   = new Date(start);
+    const m   = new Date(maturity);
+    const m1e = addMonths(s, 1);
+    const m2s = new Date(m1e); m2s.setDate(m2s.getDate() + 1);
+
+    const rate1 = (sofr + sp1 * 100) / 100;  // 실제 비율
+    // 재계산
+    const r1 = (sofr / 100) + sp1;
+    const r2 = (sofr / 100) + sp2;
+
+    const d1 = daysBetween(s, m1e);
+    const d2 = daysBetween(m2s, m);
+    const i1 = principal * r1 * d1 / 360;
+    const i2 = principal * r2 * d2 / 360;
+
+    rows = [
+      { label: '0~1개월',    start: fmtDate(s),   end: fmtDate(m1e), rate: ((sofr/100 + sp1)*100).toFixed(3)+'%', days: d1, interest: i1 },
+      { label: '1개월~만기', start: fmtDate(m2s),  end: fmtDate(m),   rate: ((sofr/100 + sp2)*100).toFixed(3)+'%', days: d2, interest: i2 },
+    ];
+
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.label}</td><td>${r.start}</td><td>${r.end}</td>
+        <td>${r.rate}</td><td><b>${r.days}일</b></td>
+        <td class="td-right">${fmt(r.interest)}</td>
+      </tr>
+    `).join('') + `
+      <tr class="total">
+        <td colspan="4">합계</td>
+        <td><b>${d1+d2}일</b></td>
+        <td class="td-right">${fmt(i1+i2)}</td>
+      </tr>`;
+  }
+
+  function copyTSV() {
+    const header = ['구간','계산시작일','계산종료일','이율','일수','이자금액(USD)'];
+    const body = rows.map(r => [r.label, r.start, r.end, r.rate, r.days, r.interest.toFixed(2)]);
+    const total = ['합계','','','', rows.reduce((a,r)=>a+r.days,0), rows.reduce((a,r)=>a+r.interest,0).toFixed(2)];
+    const tsv = [header, ...body, total].map(r => r.join('\t')).join('\n');
+    navigator.clipboard.writeText(tsv).then(() => alert('복사 완료! 엑셀에서 Ctrl+V 하세요.'));
+  }
+
+  function downloadCSV() {
+    const header = ['구간','계산시작일','계산종료일','이율','일수','이자금액(USD)'];
+    const body = rows.map(r => [r.label, r.start, r.end, r.rate, r.days, r.interest.toFixed(2)]);
+    const total = ['합계','','','', rows.reduce((a,r)=>a+r.days,0), rows.reduce((a,r)=>a+r.interest,0).toFixed(2)];
+    const csv = [header, ...body, total].map(r => r.join(',')).join('\n');
+    const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'bridge_loan_interest.csv';
+    a.click();
+  }
+
+  calc();
+</script>
+</body>
+</html>
