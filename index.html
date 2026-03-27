@@ -1,146 +1,396 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SC USD Bridge Loan 이자 계산기</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f4f6fa; padding: 32px 16px; color: #222; }
-    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); max-width: 720px; margin: 0 auto; padding: 32px; }
-    h2 { font-size: 22px; font-weight: 700; color: #1e3a5f; margin-bottom: 4px; }
-    .sub { font-size: 12px; color: #888; margin-bottom: 24px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 28px; }
-    label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
-    input { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 7px 10px; font-size: 13px; text-align: right; outline: none; transition: border 0.2s; }
-    input[type="date"] { text-align: left; }
-    input:focus { border-color: #3b6fd4; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th { background: #1e3a5f; color: #fff; padding: 9px 12px; text-align: center; }
-    td { padding: 9px 12px; text-align: center; border-bottom: 1px solid #eee; }
-    tr:nth-child(odd) td { background: #f7f9ff; }
-    .total td { background: #fff8e1 !important; font-weight: 700; }
-    .td-right { text-align: right; }
-    .btns { display: flex; gap: 10px; margin-top: 20px; }
-    button { padding: 9px 18px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
-    .btn-copy { background: #1e3a5f; color: #fff; }
-    .btn-csv  { background: #2e7d32; color: #fff; }
-    .note { font-size: 11px; color: #aaa; margin-top: 10px; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>차입금 이자 계산 대시보드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f0f2f7;color:#222}
+header{background:#1e3a5f;color:#fff;padding:18px 28px}
+header h1{font-size:19px;font-weight:700}
+header p{font-size:11px;color:#9ab;margin-top:3px}
+.tabs{display:flex;flex-wrap:wrap;gap:3px;padding:14px 20px 0;background:#1e3a5f}
+.tab{padding:8px 15px;border-radius:8px 8px 0 0;cursor:pointer;font-size:12px;font-weight:600;color:#9ab;background:#16304f;border:none;transition:all .15s}
+.tab:hover{color:#fff}
+.tab.active{background:#f0f2f7;color:#1e3a5f}
+.content{max-width:860px;margin:0 auto;padding:20px 14px}
+.panel{display:none}.panel.active{display:block}
+.card{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:18px;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:700;color:#1e3a5f;margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid #e8edf5}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.field label{font-size:11px;color:#666;display:block;margin-bottom:3px}
+.field .hint{font-size:10px;color:#e07b00;margin-top:2px}
+.field input{width:100%;border:1px solid #ddd;border-radius:6px;padding:6px 9px;font-size:12px;outline:none;transition:border .2s}
+.field input:focus{border-color:#3b6fd4}
+.field input[type=date]{text-align:left}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+th{background:#1e3a5f;color:#fff;padding:8px 10px;text-align:center;font-weight:600}
+td{padding:7px 10px;text-align:center;border-bottom:1px solid #eee}
+tr:nth-child(even) td{background:#f7f9ff}
+.total-row td{background:#fff8e1!important;font-weight:700}
+.td-r{text-align:right}
+.btns{display:flex;gap:8px;margin-top:14px}
+button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-calc{background:#1e3a5f;color:#fff}
+.btn-copy{background:#455a7a;color:#fff}
+.btn-csv{background:#2e7d32;color:#fff}
+.fx-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.fx-row label{font-size:11px;color:#666}
+.fx-row input{border:1px solid #ddd;border-radius:6px;padding:5px 8px;font-size:12px;width:120px;outline:none}
+.fx-row .fx-hint{font-size:10px;color:#888}
+.tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;margin-left:6px}
+.tag-usd{background:#e3f0ff;color:#1565c0}
+.tag-eur{background:#e8f5e9;color:#2e7d32}
+.tag-jpy{background:#fff8e1;color:#f57f17}
+.tag-krw{background:#fce4ec;color:#c62828}
+.sub-row{font-size:11px;color:#666;margin-top:6px}
+.notice{font-size:11px;color:#e07b00;background:#fff8e1;border-radius:6px;padding:8px 12px;margin-bottom:12px}
+</style>
 </head>
 <body>
-<div class="card">
-  <h2>SC USD Bridge Loan 이자 계산기</h2>
-  <p class="sub">기준: Actual/360 · 개시일 당일 포함 · 말일 산입</p>
+<header>
+  <h1>차입금 이자 계산 대시보드</h1>
+  <p>기준금리 입력 후 [계산] 클릭 · 원화 환산은 선택 입력</p>
+</header>
 
-  <div class="grid">
-    <div><label>대출원금 (USD)</label><input type="number" id="principal" value="500000000" oninput="calc()"></div>
-    <div><label>실행일</label><input type="date" id="startDate" value="2026-03-26" oninput="calc()"></div>
-    <div><label>만기일</label><input type="date" id="maturityDate" value="2026-06-25" oninput="calc()"></div>
-    <div><label>SOFR 1M (%)</label><input type="number" id="sofr" value="3.676" step="0.001" oninput="calc()"></div>
-    <div><label>Spread 0~1개월 (bps)</label><input type="number" id="spread1" value="40" step="1" oninput="calc()"></div>
-    <div><label>Spread 1개월~만기 (bps)</label><input type="number" id="spread2" value="45" step="1" oninput="calc()"></div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th>구간</th><th>계산시작일</th><th>계산종료일</th><th>이율</th><th>일수</th><th>이자금액 (USD)</th></tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
-
-  <div class="btns">
-    <button class="btn-copy" onclick="copyTSV()">📋 엑셀 복사</button>
-    <button class="btn-csv"  onclick="downloadCSV()">⬇️ CSV 다운로드</button>
-  </div>
-  <p class="note">* 이자 = 원금 × 이율 × 일수 / 360</p>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('bond')">공모사채</button>
+  <button class="tab" onclick="switchTab('facility')">시설자금대출</button>
+  <button class="tab" onclick="switchTab('samurai')">Samurai Bond</button>
+  <button class="tab" onclick="switchTab('cacib')">CACIB</button>
+  <button class="tab" onclick="switchTab('sc')">SC Term Loan</button>
+  <button class="tab" onclick="switchTab('hsbc')">HSBC Term Loan</button>
 </div>
 
+<div class="content">
+
+<!-- ===== 공모사채 ===== -->
+<div id="panel-bond" class="panel active">
+  <div class="notice">고정금리 · KRW · 365일 기준 · 이자납입일: 1/24, 4/24, 7/24, 10/24 (분기)</div>
+  <div class="card">
+    <div class="card-title">기본 조건</div>
+    <div class="grid4">
+      <div class="field"><label>계산 시작일</label><input type="date" id="bond-s" value="2026-01-24"/></div>
+      <div class="field"><label>계산 종료일</label><input type="date" id="bond-e" value="2026-04-24"/></div>
+      <div class="field"><label>5-1회 원금 (KRW)</label><input type="number" id="bond1-p" value="170000000000"/></div>
+      <div class="field"><label>5-2회 원금 (KRW)</label><input type="number" id="bond2-p" value="30000000000"/></div>
+      <div class="field"><label>5-1회 금리 (%)</label><input type="number" id="bond1-r" value="3.792" step="0.001"/></div>
+      <div class="field"><label>5-2회 금리 (%)</label><input type="number" id="bond2-r" value="3.836" step="0.001"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">계산 결과</div>
+    <table><thead><tr><th>구분</th><th>원금</th><th>금리</th><th>일수</th><th>이자 (KRW)</th></tr></thead>
+    <tbody id="bond-result"></tbody></table>
+    <div class="btns">
+      <button class="btn btn-calc" onclick="calcBond()">계산</button>
+      <button class="btn btn-copy" onclick="copyTSV('bond-result','bond-total')">📋 엑셀 복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 시설자금대출 ===== -->
+<div id="panel-facility" class="panel">
+  <div class="notice">고정금리 · KRW · 365일 기준 · 이자납입일: 매달 12일 (산업은행)</div>
+  <div class="card">
+    <div class="card-title">기본 조건</div>
+    <div class="grid3">
+      <div class="field"><label>계산 시작일</label><input type="date" id="fac-s" value="2026-03-12"/></div>
+      <div class="field"><label>계산 종료일</label><input type="date" id="fac-e" value="2026-04-12"/></div>
+      <div class="field"><label>원금 (KRW)</label><input type="number" id="fac-p" value="100000000000"/></div>
+      <div class="field"><label>금리 (%)</label><input type="number" id="fac-r" value="2.640" step="0.001"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">계산 결과</div>
+    <table><thead><tr><th>계산시작일</th><th>계산종료일</th><th>원금</th><th>금리</th><th>일수</th><th>이자 (KRW)</th></tr></thead>
+    <tbody id="fac-result"></tbody></table>
+    <div class="btns">
+      <button class="btn btn-calc" onclick="calcFacility()">계산</button>
+      <button class="btn btn-copy" onclick="copyTSV('fac-result','fac-total')">📋 엑셀 복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Samurai Bond ===== -->
+<div id="panel-samurai" class="panel">
+  <div class="notice">고정금리 · JPY · 365일 기준 · 이자납입일: 5/1, 11/1 (반기)</div>
+  <div class="card">
+    <div class="card-title">기본 조건 <span class="tag tag-jpy">JPY</span></div>
+    <div class="grid2">
+      <div class="field"><label>계산 시작일</label><input type="date" id="sam-s" value="2026-05-01"/></div>
+      <div class="field"><label>계산 종료일</label><input type="date" id="sam-e" value="2026-11-01"/></div>
+    </div>
+    <div style="margin-top:10px">
+      <table>
+        <thead><tr><th>트랜치</th><th>원금 (JPY)</th><th>금리 (%)</th><th>만기일</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><input type="number" id="sam1-p" value="14000000000" style="width:140px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam1-r" value="1.142" step="0.001" style="width:80px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2027.04.30</td></tr>
+          <tr><td>2</td><td><input type="number" id="sam2-p" value="1500000000" style="width:140px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam2-r" value="1.432" step="0.001" style="width:80px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2028.11.01</td></tr>
+          <tr><td>3</td><td><input type="number" id="sam3-p" value="1500000000" style="width:140px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam3-r" value="1.755" step="0.001" style="width:80px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2030.11.01</td></tr>
+          <tr><td>4</td><td><input type="number" id="sam4-p" value="3000000000" style="width:140px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td><input type="number" id="sam4-r" value="2.414" step="0.001" style="width:80px;border:1px solid #ddd;border-radius:4px;padding:4px;font-size:12px"/></td><td>2035.11.01</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fx-row">
+      <label>JPY/KRW 환율 (선택)</label>
+      <input type="number" id="sam-fx" placeholder="예: 9.2" step="0.01"/>
+      <span class="fx-hint">입력 시 원화 환산 표시</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">계산 결과</div>
+    <table><thead><tr><th>트랜치</th><th>원금 (JPY)</th><th>금리</th><th>일수</th><th>이자 (JPY)</th><th>이자 (KRW)</th></tr></thead>
+    <tbody id="sam-result"></tbody></table>
+    <div class="btns">
+      <button class="btn btn-calc" onclick="calcSamurai()">계산</button>
+      <button class="btn btn-copy" onclick="copyTSV('sam-result','sam-total')">📋 엑셀 복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CACIB ===== -->
+<div id="panel-cacib" class="panel">
+  <div class="notice">EURIBOR 1M + 57bps · EUR · Actual/360 · 이자납입일: 매달 23일 · 기준금리: 실행일 2영업일 전 EURIBOR 확정</div>
+  <div class="card">
+    <div class="card-title">기본 조건 <span class="tag tag-eur">EUR</span></div>
+    <div class="grid3">
+      <div class="field"><label>계산 시작일</label><input type="date" id="cac-s" value="2026-03-23"/></div>
+      <div class="field"><label>계산 종료일</label><input type="date" id="cac-e" value="2026-04-23"/></div>
+      <div class="field"><label>원금 (EUR)</label><input type="number" id="cac-p" value="563000000"/></div>
+      <div class="field">
+        <label>EURIBOR 1M (%)</label>
+        <input type="number" id="cac-euribor" value="" step="0.001" placeholder="직접 입력"/>
+        <div class="hint" style="font-size:10px;color:#e07b00;margin-top:2px">실행일 2영업일 전 고시 금리</div>
+      </div>
+      <div class="field"><label>Spread (bps)</label><input type="number" id="cac-spread" value="57"/></div>
+    </div>
+    <div class="fx-row">
+      <label>EUR/KRW 환율 (선택)</label>
+      <input type="number" id="cac-fx" placeholder="예: 1480" step="1"/>
+      <span class="fx-hint">입력 시 원화 환산 표시</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">계산 결과</div>
+    <table><thead><tr><th>계산시작일</th><th>계산종료일</th><th>원금 (EUR)</th><th>이율</th><th>일수</th><th>이자 (EUR)</th><th>이자 (KRW)</th></tr></thead>
+    <tbody id="cac-result"></tbody></table>
+    <div class="btns">
+      <button class="btn btn-calc" onclick="calcCACIB()">계산</button>
+      <button class="btn btn-copy" onclick="copyTSV('cac-result','cac-total')">📋 엑셀 복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SC ===== -->
+<div id="panel-sc" class="panel">
+  <div class="notice">SOFR 1M + 40bps(0~1개월) / +45bps(이후) · USD · Actual/360 · 개시일 포함 · 말일산입 · 이자납입일: 매달 26일 · 기준금리: 실행일 SOFR 확정</div>
+  <div class="card">
+    <div class="card-title">기본 조건 <span class="tag tag-usd">USD</span></div>
+    <div class="grid3">
+      <div class="field"><label>실행일 (개시일)</label><input type="date" id="sc-s" value="2026-03-26"/></div>
+      <div class="field"><label>만기일</label><input type="date" id="sc-e" value="2026-06-25"/></div>
+      <div class="field"><label>원금 (USD)</label><input type="number" id="sc-p" value="500000000"/></div>
+      <div class="field">
+        <label>SOFR 1M (%)</label>
+        <input type="number" id="sc-sofr" value="3.676" step="0.001"/>
+        <div class="hint" style="font-size:10px;color:#e07b00;margin-top:2px">실행일 SOFR 고시 금리</div>
+      </div>
+      <div class="field"><label>Spread 0~1개월 (bps)</label><input type="number" id="sc-sp1" value="40"/></div>
+      <div class="field"><label>Spread 1개월~만기 (bps)</label><input type="number" id="sc-sp2" value="45"/></div>
+    </div>
+    <div class="fx-row">
+      <label>USD/KRW 환율 (선택)</label>
+      <input type="number" id="sc-fx" placeholder="예: 1380" step="1"/>
+      <span class="fx-hint">입력 시 원화 환산 표시</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">계산 결과</div>
+    <table><thead><tr><th>구간</th><th>시작일</th><th>종료일</th><th>이율</th><th>일수</th><th>이자 (USD)</th><th>이자 (KRW)</th></tr></thead>
+    <tbody id="sc-result"></tbody></table>
+    <div class="btns">
+      <button class="btn btn-calc" onclick="calcSC()">계산</button>
+      <button class="btn btn-copy" onclick="copyTSV('sc-result','sc-total')">📋 엑셀 복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HSBC ===== -->
+<div id="panel-hsbc" class="panel">
+  <div class="notice">SOFR 3M + 55bps · USD · Actual/360 · 개시일 포함 · 말일산입 · 이자납입일: 3개월마다 26일 · 기준금리: 실행일 SOFR 확정</div>
+  <div class="card">
+    <div class="card-title">기본 조건 <span class="tag tag-usd">USD</span></div>
+    <div class="grid3">
+      <div class="field"><label>실행일 (개시일)</label><input type="date" id="hsbc-s" value="2026-03-26"/></div>
+      <div class="field"><label>만기일</label><input type="date" id="hsbc-e" value="2027-03-26"/></div>
+      <div class="field"><label>원금 (USD)</label><input type="number" id="hsbc-p" value="300000000"/></div>
+      <div class="field">
+        <label>SOFR 3M (%)</label>
+        <input type="number" id="hsbc-sofr" value="" step="0.001" placeholder="직접 입력"/>
+        <div class="hint" style="font-size:10px;color:#e07b00;margin-top:2px">실행일 SOFR 고시 금리</div>
+      </div>
+      <div class="field"><label>Spread (bps)</label><input type="number" id="hsbc-spread" value="55"/></div>
+    </div>
+    <div class="fx-row">
+      <label>USD/KRW 환율 (선택)</label>
+      <input type="number" id="hsbc-fx" placeholder="예: 1380" step="1"/>
+      <span class="fx-hint">입력 시 원화 환산 표시</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">계산 결과</div>
+    <table><thead><tr><th>구간</th><th>시작일</th><th>종료일</th><th>이율</th><th>일수</th><th>이자 (USD)</th><th>이자 (KRW)</th></tr></thead>
+    <tbody id="hsbc-result"></tbody></table>
+    <div class="btns">
+      <button class="btn btn-calc" onclick="calcHSBC()">계산</button>
+      <button class="btn btn-copy" onclick="copyTSV('hsbc-result','hsbc-total')">📋 엑셀 복사</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
 <script>
-  let rows = [];
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const ids=['bond','facility','samurai','cacib','sc','hsbc'];
+    t.classList.toggle('active', ids[i]===id);
+  });
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+}
 
-  function fmt(n) {
-    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt=(n,d=0)=>n==null||isNaN(n)?'-':n.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtD=(d)=>d.toISOString().slice(0,10);
+function days(a,b){return Math.round((new Date(b)-new Date(a))/86400000)+1} // 말일 산입
+function addMonths(d,m){const r=new Date(d);r.setMonth(r.getMonth()+m);return r}
+
+// ── 공모사채 ──
+function calcBond(){
+  const s=document.getElementById('bond-s').value;
+  const e=document.getElementById('bond-e').value;
+  const p1=+document.getElementById('bond1-p').value;
+  const p2=+document.getElementById('bond2-p').value;
+  const r1=+document.getElementById('bond1-r').value/100;
+  const r2=+document.getElementById('bond2-r').value/100;
+  const d=days(s,e);
+  const i1=p1*r1*d/365, i2=p2*r2*d/365;
+  document.getElementById('bond-result').innerHTML=`
+    <tr><td>5-1회 (한투증권 외)</td><td>${fmt(p1)}</td><td>${(r1*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i1)}</td></tr>
+    <tr><td>5-2회 (한투증권 외)</td><td>${fmt(p2)}</td><td>${(r2*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i2)}</td></tr>
+    <tr class="total-row"><td colspan="4">합계</td><td class="td-r">${fmt(i1+i2)}</td></tr>`;
+}
+
+// ── 시설자금대출 ──
+function calcFacility(){
+  const s=document.getElementById('fac-s').value;
+  const e=document.getElementById('fac-e').value;
+  const p=+document.getElementById('fac-p').value;
+  const r=+document.getElementById('fac-r').value/100;
+  const d=days(s,e);
+  const i=p*r*d/365;
+  document.getElementById('fac-result').innerHTML=`
+    <tr><td>${s}</td><td>${e}</td><td>${fmt(p)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i)}</td></tr>
+    <tr class="total-row"><td colspan="5">합계</td><td class="td-r">${fmt(i)}</td></tr>`;
+}
+
+// ── Samurai Bond ──
+function calcSamurai(){
+  const s=document.getElementById('sam-s').value;
+  const e=document.getElementById('sam-e').value;
+  const fx=+document.getElementById('sam-fx').value||null;
+  const ps=[1,2,3,4].map(i=>+document.getElementById(`sam${i}-p`).value);
+  const rs=[1,2,3,4].map(i=>+document.getElementById(`sam${i}-r`).value/100);
+  const d=days(s,e);
+  let rows='', total=0;
+  ps.forEach((p,i)=>{
+    const interest=p*rs[i]*d/365;
+    total+=interest;
+    const krw=fx?fmt(interest*fx):'-';
+    rows+=`<tr><td>${i+1}</td><td>${fmt(p)}</td><td>${(rs[i]*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(interest)}</td><td class="td-r">${krw}</td></tr>`;
+  });
+  rows+=`<tr class="total-row"><td colspan="4">합계</td><td class="td-r">${fmt(total)}</td><td class="td-r">${fx?fmt(total*fx):'-'}</td></tr>`;
+  document.getElementById('sam-result').innerHTML=rows;
+}
+
+// ── CACIB ──
+function calcCACIB(){
+  const s=document.getElementById('cac-s').value;
+  const e=document.getElementById('cac-e').value;
+  const p=+document.getElementById('cac-p').value;
+  const euribor=+document.getElementById('cac-euribor').value;
+  const sp=+document.getElementById('cac-spread').value/10000;
+  const fx=+document.getElementById('cac-fx').value||null;
+  const r=euribor/100+sp;
+  const d=days(s,e);
+  const i=p*r*d/360;
+  const krw=fx?fmt(i*fx):'-';
+  document.getElementById('cac-result').innerHTML=`
+    <tr><td>${s}</td><td>${e}</td><td>${fmt(p)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i,2)}</td><td class="td-r">${krw}</td></tr>
+    <tr class="total-row"><td colspan="5">합계</td><td class="td-r">${fmt(i,2)}</td><td class="td-r">${krw}</td></tr>`;
+}
+
+// ── SC Term Loan ──
+function calcSC(){
+  const s=document.getElementById('sc-s').value;
+  const e=document.getElementById('sc-e').value;
+  const p=+document.getElementById('sc-p').value;
+  const sofr=+document.getElementById('sc-sofr').value;
+  const sp1=+document.getElementById('sc-sp1').value/10000;
+  const sp2=+document.getElementById('sc-sp2').value/10000;
+  const fx=+document.getElementById('sc-fx').value||null;
+  const m1e=addMonths(new Date(s),1);
+  const m2s=new Date(m1e); m2s.setDate(m2s.getDate()+1);
+  const r1=sofr/100+sp1, r2=sofr/100+sp2;
+  const d1=days(s,fmtD(m1e)), d2=days(fmtD(m2s),e);
+  const i1=p*r1*d1/360, i2=p*r2*d2/360;
+  const krw1=fx?fmt(i1*fx):'-', krw2=fx?fmt(i2*fx):'-', krwT=fx?fmt((i1+i2)*fx):'-';
+  document.getElementById('sc-result').innerHTML=`
+    <tr><td>0~1개월</td><td>${s}</td><td>${fmtD(m1e)}</td><td>${(r1*100).toFixed(3)}%</td><td>${d1}일</td><td class="td-r">${fmt(i1,2)}</td><td class="td-r">${krw1}</td></tr>
+    <tr><td>1개월~만기</td><td>${fmtD(m2s)}</td><td>${e}</td><td>${(r2*100).toFixed(3)}%</td><td>${d2}일</td><td class="td-r">${fmt(i2,2)}</td><td class="td-r">${krw2}</td></tr>
+    <tr class="total-row"><td colspan="4">합계</td><td>${d1+d2}일</td><td class="td-r">${fmt(i1+i2,2)}</td><td class="td-r">${krwT}</td></tr>`;
+}
+
+// ── HSBC Term Loan ──
+function calcHSBC(){
+  const s=document.getElementById('hsbc-s').value;
+  const e=document.getElementById('hsbc-e').value;
+  const p=+document.getElementById('hsbc-p').value;
+  const sofr=+document.getElementById('hsbc-sofr').value;
+  const sp=+document.getElementById('hsbc-spread').value/10000;
+  const fx=+document.getElementById('hsbc-fx').value||null;
+  const r=sofr/100+sp;
+  // 3개월마다 구간 분리
+  let rows='', cur=new Date(s), totalI=0, totalD=0, seg=1;
+  while(cur<new Date(e)){
+    const next=addMonths(cur,3);
+    const segEnd=next>new Date(e)?new Date(e):next;
+    // 마지막 구간 아니면 segEnd는 응당일, 그 다음날부터 새 구간
+    const isLast=segEnd>=new Date(e);
+    const segEndAdj=isLast?new Date(e):new Date(segEnd.getTime()-86400000);
+    const d=days(fmtD(cur),fmtD(isLast?new Date(e):segEnd));
+    const i=p*r*d/360;
+    totalI+=i; totalD+=d;
+    const krw=fx?fmt(i*fx):'-';
+    rows+=`<tr><td>${seg}구간</td><td>${fmtD(cur)}</td><td>${fmtD(isLast?new Date(e):segEnd)}</td><td>${(r*100).toFixed(3)}%</td><td>${d}일</td><td class="td-r">${fmt(i,2)}</td><td class="td-r">${krw}</td></tr>`;
+    cur=new Date(segEnd); cur.setDate(cur.getDate()+1);
+    seg++;
+    if(seg>20) break;
   }
-  function fmtDate(d) {
-    return d.toISOString().slice(0, 10);
-  }
-  function addMonths(date, m) {
-    const d = new Date(date);
-    d.setMonth(d.getMonth() + m);
-    return d;
-  }
-  function daysBetween(a, b) {
-    const ms = new Date(b) - new Date(a);
-    return Math.round(ms / 86400000) + 1;
-  }
+  rows+=`<tr class="total-row"><td colspan="4">합계</td><td>${totalD}일</td><td class="td-r">${fmt(totalI,2)}</td><td class="td-r">${fx?fmt(totalI*fx):'-'}</td></tr>`;
+  document.getElementById('hsbc-result').innerHTML=rows;
+}
 
-  function calc() {
-    const principal = Number(document.getElementById('principal').value);
-    const sofr      = Number(document.getElementById('sofr').value);
-    const sp1       = Number(document.getElementById('spread1').value) / 100;
-    const sp2       = Number(document.getElementById('spread2').value) / 100;
-    const start     = document.getElementById('startDate').value;
-    const maturity  = document.getElementById('maturityDate').value;
-
-    if (!start || !maturity) return;
-
-    const s   = new Date(start);
-    const m   = new Date(maturity);
-    const m1e = addMonths(s, 1);
-    const m2s = new Date(m1e); m2s.setDate(m2s.getDate() + 1);
-
-    const rate1 = (sofr + sp1 * 100) / 100;  // 실제 비율
-    // 재계산
-    const r1 = (sofr / 100) + sp1;
-    const r2 = (sofr / 100) + sp2;
-
-    const d1 = daysBetween(s, m1e);
-    const d2 = daysBetween(m2s, m);
-    const i1 = principal * r1 * d1 / 360;
-    const i2 = principal * r2 * d2 / 360;
-
-    rows = [
-      { label: '0~1개월',    start: fmtDate(s),   end: fmtDate(m1e), rate: ((sofr/100 + sp1)*100).toFixed(3)+'%', days: d1, interest: i1 },
-      { label: '1개월~만기', start: fmtDate(m2s),  end: fmtDate(m),   rate: ((sofr/100 + sp2)*100).toFixed(3)+'%', days: d2, interest: i2 },
-    ];
-
-    const tbody = document.getElementById('tbody');
-    tbody.innerHTML = rows.map(r => `
-      <tr>
-        <td>${r.label}</td><td>${r.start}</td><td>${r.end}</td>
-        <td>${r.rate}</td><td><b>${r.days}일</b></td>
-        <td class="td-right">${fmt(r.interest)}</td>
-      </tr>
-    `).join('') + `
-      <tr class="total">
-        <td colspan="4">합계</td>
-        <td><b>${d1+d2}일</b></td>
-        <td class="td-right">${fmt(i1+i2)}</td>
-      </tr>`;
-  }
-
-  function copyTSV() {
-    const header = ['구간','계산시작일','계산종료일','이율','일수','이자금액(USD)'];
-    const body = rows.map(r => [r.label, r.start, r.end, r.rate, r.days, r.interest.toFixed(2)]);
-    const total = ['합계','','','', rows.reduce((a,r)=>a+r.days,0), rows.reduce((a,r)=>a+r.interest,0).toFixed(2)];
-    const tsv = [header, ...body, total].map(r => r.join('\t')).join('\n');
-    navigator.clipboard.writeText(tsv).then(() => alert('복사 완료! 엑셀에서 Ctrl+V 하세요.'));
-  }
-
-  function downloadCSV() {
-    const header = ['구간','계산시작일','계산종료일','이율','일수','이자금액(USD)'];
-    const body = rows.map(r => [r.label, r.start, r.end, r.rate, r.days, r.interest.toFixed(2)]);
-    const total = ['합계','','','', rows.reduce((a,r)=>a+r.days,0), rows.reduce((a,r)=>a+r.interest,0).toFixed(2)];
-    const csv = [header, ...body, total].map(r => r.join(',')).join('\n');
-    const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8;' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'bridge_loan_interest.csv';
-    a.click();
-  }
-
-  calc();
+// ── 엑셀 복사 ──
+function copyTSV(tbodyId){
+  const rows=[...document.getElementById(tbodyId).querySelectorAll('tr')];
+  const tsv=rows.map(r=>[...r.querySelectorAll('td')].map(c=>c.innerText).join('\t')).join('\n');
+  navigator.clipboard.writeText(tsv).then(()=>alert('복사 완료! 엑셀에서 Ctrl+V 하세요.'));
+}
 </script>
 </body>
 </html>
