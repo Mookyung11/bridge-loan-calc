@@ -464,13 +464,20 @@ function makeHsbcPaySegs(startDate, endDate, freqM) {
   const segs = [];
   const endD = dateOnly(endDate);
   let cur = dateOnly(startDate);
-  while (fmtD(cur) <= fmtD(endD)) {
+  while (fmtD(cur) < fmtD(endD)) {
     const nextPay = addMonths(cur, freqM);
-    const pe = fmtD(nextPay) <= fmtD(endD) ? new Date(nextPay) : new Date(endD);
-    const segEnd = addDays(pe, -1);
-    segs.push({start: new Date(cur), end: new Date(segEnd), payDate: fmtD(pe)});
-    cur = new Date(pe);
-    if (fmtD(cur) >= fmtD(endD)) break;
+    const isLast = fmtD(nextPay) >= fmtD(endD);
+    if (isLast) {
+      // 마지막 구간: cur ~ 만기일-1, 납입일=만기일
+      const segEnd = addDays(endD, -1);
+      segs.push({start: new Date(cur), end: new Date(segEnd), payDate: fmtD(endD)});
+      break;
+    } else {
+      // 중간 구간: cur ~ nextPay-1, 납입일=nextPay
+      const segEnd = addDays(nextPay, -1);
+      segs.push({start: new Date(cur), end: new Date(segEnd), payDate: fmtD(nextPay)});
+      cur = new Date(nextPay);
+    }
   }
   return segs;
 }
