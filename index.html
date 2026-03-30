@@ -180,7 +180,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
           <div class="field"><label>이자주기</label>
             <select id="fac-freq"><option value="1" selected>매월</option><option value="3">분기</option></select>
           </div>
-          <div class="field"><label>이번 주기 시작일 <span style="color:#e07b00">(납입일 익일)</span></label><input type="date" id="fac-ps"/></div>
+          <div class="field"><label>이번 주기 시작일</label><input type="date" id="fac-ps"/></div>
           <div class="field"><label>원금 (KRW)</label><input type="number" id="fac-p" value="100000000000"/></div>
           <div class="field"><label>Spread (bps)</label><input type="number" id="fac-spread" value="13"/></div>
         </div>
@@ -513,7 +513,7 @@ function buildFacRates(){
   const sp=+document.getElementById('fac-spread').value;
   const segs=makePaySegs(s,e,12,true,true);
   const defaults=[2.51,2.53,2.58];
-  buildRateRows('fac-rate-body',segs,i=>defaults[i]??2.58,sp);
+  buildRateRows('fac-rate-body',segs,i=>defaults[i]??2.58,sp,3);
 }
 function buildCacRates(){
   const s=new Date(document.getElementById('cac-s').value);
@@ -521,19 +521,22 @@ function buildCacRates(){
   const sp=+document.getElementById('cac-spread').value;
   const segs=makePaySegs(s,e,1,true,true);
   const defaults=[1.956,1.930,2.130,2.330];
-  buildRateRows('cac-rate-body',segs,i=>defaults[i]??+(2.0+i*0.20).toFixed(3),sp);
+  buildRateRows('cac-rate-body',segs,i=>defaults[i]??+(2.0+i*0.20).toFixed(3),sp,3);
 }
 function buildScRates(){
   const s=new Date(document.getElementById('sc-s').value);
   const e=new Date(document.getElementById('sc-e').value);
+  const sp1=+document.getElementById('sc-sp1').value;
   const segs=makePaySegs(s,e,1,false,true);
-  buildRateRows('sc-rate-body',segs,()=>3.67636,0,5);
+  // SC는 구간별 spread가 다르므로 적용금리는 계산 시 처리, 여기선 sp1 기준 표시
+  buildRateRows('sc-rate-body',segs,()=>3.67636,sp1,5);
 }
 function buildHsbcRates(){
   const s=new Date(document.getElementById('hsbc-s').value);
   const e=new Date(document.getElementById('hsbc-e').value);
+  const sp=+document.getElementById('hsbc-spread').value;
   const segs=makePaySegs(s,e,3,false,false);
-  buildRateRows('hsbc-rate-body',segs,()=>3.67636,0,5);
+  buildRateRows('hsbc-rate-body',segs,()=>3.71088,sp,5);
 }
 
 // ── 공통 차입금 계산 ──
