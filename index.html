@@ -442,16 +442,22 @@ function makePaySegs(startDate, endDate, freqM, nextDay, incEnd){
   return segs;
 }
 
-// 월결산 구간: 항상 1일~말일 기준, 첫구간=시작일~당월말
-// 마지막 구간 = 마지막 납입일까지 (말일이 아닐 수 있음)
+// 월결산 구간: 항상 말일에서 끊김
+// 첫구간=시작일~당월말, 이후 1일~말일, 마지막=1일~납입일
 function makeAccSegs(start,end){
   const segs=[],endD=new Date(end);
   let cur=new Date(start);
   while(cur<=endD){
     const me=monthEnd(cur);
-    const se=me<endD?new Date(me):new Date(endD);
-    segs.push({start:new Date(cur),end:new Date(se),month:ym(se)});
-    cur=new Date(se.getFullYear(),se.getMonth()+1,1);
+    if(me<endD){
+      // 아직 납입일 전 → 말일까지
+      segs.push({start:new Date(cur),end:new Date(me),month:ym(me)});
+      cur=new Date(me.getFullYear(),me.getMonth()+1,1); // 다음달 1일
+    } else {
+      // 마지막 구간 → 납입일까지
+      segs.push({start:new Date(cur),end:new Date(endD),month:ym(endD)});
+      break;
+    }
   }
   return segs;
 }
@@ -669,8 +675,8 @@ function calcSC(){
   });
   calcLoanGeneric({paySegs,rateSegs,p,div:360,fx:'sc-fx',payId:'sc-pay',accId:'sc-acc',hasFx:true,
     curPsDate:psVal||null,incEnd:true,
-    extraPayCols:rs=>`<td>${rs.base?.toFixed(5)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
+    extraPayCols:rs=>`<td>${rs.base?.toFixed(5)||'-'}%</td><td>${rs.applied?.toFixed(5)||'-'}%</td>`,
+    extraAccCols:rs=>`<td>${rs.applied?.toFixed(5)||'-'}%</td>`});
 }
 
 // ══ HSBC (당일기산, 말일불산입) ══
@@ -687,8 +693,8 @@ function calcHSBC(){
   });
   calcLoanGeneric({paySegs,rateSegs,p,div:360,fx:'hsbc-fx',payId:'hsbc-pay',accId:'hsbc-acc',hasFx:true,
     curPsDate:psVal||null,incEnd:false,
-    extraPayCols:rs=>`<td>${rs.base?.toFixed(5)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
+    extraPayCols:rs=>`<td>${rs.base?.toFixed(5)||'-'}%</td><td>${rs.applied?.toFixed(5)||'-'}%</td>`,
+    extraAccCols:rs=>`<td>${rs.applied?.toFixed(5)||'-'}%</td>`});
 }
 </script>
 </body>
