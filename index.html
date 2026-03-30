@@ -31,7 +31,7 @@ header p{font-size:11px;color:#9ab;margin-top:2px}
 .rate-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
 .rate-table th{background:#e8edf5;color:#1e3a5f;padding:6px 10px;text-align:center;font-weight:600}
 .rate-table td{padding:5px 8px;text-align:center;border-bottom:1px solid #eee}
-.rate-table input{width:90px;border:1px solid #ddd;border-radius:4px;padding:4px 6px;font-size:12px;text-align:right}
+.rate-table input{width:100px;border:1px solid #ddd;border-radius:4px;padding:4px 6px;font-size:12px;text-align:right}
 .view-tabs{display:flex;gap:6px;margin-bottom:12px}
 .view-tab{padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:#666;background:#f0f2f7;border:none}
 .view-tab.active{background:#1e3a5f;color:#fff}
@@ -56,7 +56,6 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 .fx-hint{font-size:10px;color:#888}
 .notice{font-size:11px;color:#555;background:#eef2f7;border-radius:6px;padding:10px 14px;margin-bottom:12px;line-height:1.8}
 .notice b{color:#1e3a5f}
-.notice .tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;margin:0 2px}
 .legend{display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#555}
 .legend-box{width:12px;height:12px;border-radius:3px}
@@ -88,7 +87,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
   <button class="top-tab" onclick="switchTop('loan')">🏦 차입금</button>
 </div>
 
-<!-- ════ 사채 ════ -->
+<!-- 사채 -->
 <div id="top-bond" style="display:block">
   <div class="sub1-tabs">
     <button class="sub1-tab active" onclick="switchSub1('bond','gongmo',event)">공모사채</button>
@@ -155,7 +154,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
   </div>
 </div>
 
-<!-- ════ 차입금 ════ -->
+<!-- 차입금 -->
 <div id="top-loan" style="display:none">
   <div class="sub1-tabs">
     <button class="sub1-tab active" onclick="switchSub1('loan','fac',event)">시설자금대출</button>
@@ -207,7 +206,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="view-panel">
           <div class="legend">
             <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
-            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 (당월말까지)</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용</div>
           </div>
           <table><thead><tr><th>결산월</th><th>인식기간</th><th>적용금리</th><th>일수</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
           <tbody id="fac-acc"></tbody></table>
@@ -256,7 +255,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="view-panel">
           <div class="legend">
             <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
-            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 (당월말까지)</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용</div>
           </div>
           <table><thead><tr><th>결산월</th><th>인식기간</th><th>적용금리</th><th>일수</th><th>미지급비용 (EUR)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
           <tbody id="cac-acc"></tbody></table>
@@ -287,7 +286,8 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <table class="rate-table">
           <thead><tr><th>구간</th><th>적용기간</th><th>SOFR 1M (%)</th><th>적용금리 (%)</th></tr></thead>
           <tbody id="sc-rate-body"></tbody>
-        </table>        <div class="btns">
+        </table>
+        <div class="btns">
           <button class="btn btn-build" onclick="buildScRates()">금리구간 생성</button>
           <button class="btn btn-calc" onclick="calcSC()">계산</button>
         </div>
@@ -305,7 +305,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="view-panel">
           <div class="legend">
             <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
-            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 (당월말까지)</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용</div>
           </div>
           <table><thead><tr><th>결산월</th><th>인식기간</th><th>적용금리</th><th>일수</th><th>미지급비용 (USD)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
           <tbody id="sc-acc"></tbody></table>
@@ -354,7 +354,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="view-panel">
           <div class="legend">
             <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
-            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 (당월말까지)</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용</div>
           </div>
           <table><thead><tr><th>결산월</th><th>인식기간</th><th>적용금리</th><th>일수</th><th>미지급비용 (USD)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
           <tbody id="hsbc-acc"></tbody></table>
@@ -368,369 +368,432 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 
 <script>
 // ── 비밀번호 ──
-function checkPw(){
-  if(document.getElementById('pw-input').value==='naver1234'){
-    document.getElementById('pw-screen').style.display='none';
-    sessionStorage.setItem('auth','ok');
+function checkPw() {
+  if (document.getElementById('pw-input').value === 'naver1234') {
+    document.getElementById('pw-screen').style.display = 'none';
+    sessionStorage.setItem('auth', 'ok');
   } else {
-    document.getElementById('pw-error').textContent='비밀번호가 올바르지 않습니다.';
-    document.getElementById('pw-input').value='';
+    document.getElementById('pw-error').textContent = '비밀번호가 올바르지 않습니다.';
+    document.getElementById('pw-input').value = '';
   }
 }
-if(sessionStorage.getItem('auth')==='ok') document.getElementById('pw-screen').style.display='none';
+if (sessionStorage.getItem('auth') === 'ok') document.getElementById('pw-screen').style.display = 'none';
 
 // ── 탭 ──
-function switchTop(id){
-  document.querySelectorAll('.top-tab').forEach((t,i)=>t.classList.toggle('active',['bond','loan'][i]===id));
-  document.getElementById('top-bond').style.display=id==='bond'?'block':'none';
-  document.getElementById('top-loan').style.display=id==='loan'?'block':'none';
+function switchTop(id) {
+  document.querySelectorAll('.top-tab').forEach((t, i) => t.classList.toggle('active', ['bond','loan'][i] === id));
+  document.getElementById('top-bond').style.display = id === 'bond' ? 'block' : 'none';
+  document.getElementById('top-loan').style.display = id === 'loan' ? 'block' : 'none';
 }
-function switchSub1(group,id,e){
-  const c=document.getElementById('top-'+group);
-  c.querySelectorAll('.sub1-tab').forEach(t=>t.classList.remove('active'));
+function switchSub1(group, id, e) {
+  const c = document.getElementById('top-' + group);
+  c.querySelectorAll('.sub1-tab').forEach(t => t.classList.remove('active'));
   e.target.classList.add('active');
-  c.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById(group+'-'+id)?.classList.add('active');
+  c.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(group + '-' + id).classList.add('active');
 }
-document.addEventListener('click',e=>{
-  if(e.target.classList.contains('view-tab')){
-    const tabs=[...e.target.parentElement.children];
-    tabs.forEach(t=>t.classList.remove('active'));
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('view-tab')) {
+    const tabs = [...e.target.parentElement.children];
+    tabs.forEach(t => t.classList.remove('active'));
     e.target.classList.add('active');
-    const panels=[...e.target.closest('.card').querySelectorAll('.view-panel')];
-    panels.forEach((p,i)=>p.classList.toggle('active',i===tabs.indexOf(e.target)));
+    const panels = [...e.target.closest('.card').querySelectorAll('.view-panel')];
+    panels.forEach((p, i) => p.classList.toggle('active', i === tabs.indexOf(e.target)));
   }
 });
 
 // ── 유틸 ──
-// 반올림: 시설대 ROUND 0자리, 외화 ROUNDDOWN 3자리
-const roundFac=n=>Math.round(n);
-const rd3=n=>Math.floor(n*1000)/1000;
-const fmt3=n=>isNaN(n)||n==null?'-':n.toLocaleString('ko-KR',{minimumFractionDigits:3,maximumFractionDigits:3});
-const fmtInt=n=>isNaN(n)||n==null?'-':Math.round(n).toLocaleString('ko-KR');
-const fmt0=n=>isNaN(n)||n==null?'-':Math.round(n).toLocaleString('ko-KR');
-const fmtD=d=>d instanceof Date?d.toISOString().slice(0,10):d;
-const addMonths=(d,m)=>{const r=new Date(d);r.setMonth(r.getMonth()+m);return r;};
-const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
-// 말일 계산 - timezone 안전하게
-const monthEnd=d=>{
-  const dt=d instanceof Date?d:new Date(d);
-  return new Date(dt.getFullYear(), dt.getMonth()+1, 0, 12, 0, 0);
-};
+const roundFac = n => Math.round(n);
+const rd3 = n => Math.floor(n * 1000) / 1000;
+const fmt3 = n => isNaN(n) || n == null ? '-' : n.toLocaleString('ko-KR', {minimumFractionDigits:3, maximumFractionDigits:3});
+const fmtInt = n => isNaN(n) || n == null ? '-' : Math.round(n).toLocaleString('ko-KR');
+const fmt0 = n => isNaN(n) || n == null ? '-' : Math.round(n).toLocaleString('ko-KR');
 
-// 날짜 비교용 - 시간 제거
-const dateOnly=d=>{
-  const dt=d instanceof Date?new Date(d):new Date(d);
-  dt.setHours(12,0,0,0);
+function fmtD(d) {
+  const dt = d instanceof Date ? d : new Date(d);
+  return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0');
+}
+function dateOnly(d) {
+  const dt = d instanceof Date ? new Date(d) : new Date(d);
+  dt.setHours(12, 0, 0, 0);
   return dt;
-};
-const ym=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function monthEnd(d) {
+  const dt = d instanceof Date ? d : new Date(d);
+  const me = new Date(dt.getFullYear(), dt.getMonth()+1, 0, 12, 0, 0);
+  return me;
+}
+function addMonths(d, m) {
+  const r = dateOnly(d);
+  r.setMonth(r.getMonth() + m);
+  return r;
+}
+function addDays(d, n) {
+  const r = dateOnly(d);
+  r.setDate(r.getDate() + n);
+  return r;
+}
+const ym = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
 
-// 일수 계산
-// inc=true: 양끝포함(말일산입), inc=false: 시작포함 종료제외(말일불산입)
-function daysCount(a,b,inc){
-  const diff=Math.round((new Date(b)-new Date(a))/86400000);
-  return inc?diff+1:diff;
+function daysCount(a, b, inc) {
+  const diff = Math.round((dateOnly(b) - dateOnly(a)) / 86400000);
+  return inc ? diff + 1 : diff;
 }
 
-// 납입 구간 생성
-// nextDay=true: 기산일=실행일+1 (시설/CACIB)
-// nextDay=false: 기산일=실행일 (SC/HSBC)
-// incEnd=true: 납입일 포함(말일산입), incEnd=false: 납입일 제외(말일불산입)
-function makePaySegs(startDate, endDate, freqM, nextDay, incEnd){
-  const endD=new Date(endDate);
-  if(freqM===0){
-    const s=nextDay?addDays(startDate,1):new Date(startDate);
-    return [{start:s,end:new Date(endD),payDate:fmtD(endD),incEnd}];
+// 납입 구간 (시설/CACIB: 익일기산, SC: 당일기산)
+function makePaySegs(startDate, endDate, freqM, nextDay, incEnd) {
+  const endD = dateOnly(endDate);
+  if (freqM === 0) {
+    const s = nextDay ? addDays(startDate, 1) : dateOnly(startDate);
+    return [{start: s, end: new Date(endD), payDate: fmtD(endD), incEnd}];
   }
-  const segs=[];
-  let payDate=addMonths(new Date(startDate),freqM);
-  let segStart=nextDay?addDays(new Date(startDate),1):new Date(startDate);
-  while(segStart<=endD){
-    const pe=payDate<=endD?new Date(payDate):new Date(endD);
-    segs.push({start:new Date(segStart),end:new Date(pe),payDate:fmtD(pe),incEnd});
-    segStart=addDays(pe,1);
-    payDate=addMonths(payDate,freqM);
+  const segs = [];
+  let payDate = addMonths(dateOnly(startDate), freqM);
+  let segStart = nextDay ? addDays(dateOnly(startDate), 1) : dateOnly(startDate);
+  while (fmtD(segStart) <= fmtD(endD)) {
+    const pe = fmtD(payDate) <= fmtD(endD) ? new Date(payDate) : new Date(endD);
+    segs.push({start: new Date(segStart), end: new Date(pe), payDate: fmtD(pe), incEnd});
+    segStart = addDays(pe, 1);
+    payDate = addMonths(payDate, freqM);
   }
   return segs;
 }
 
-// 월결산 구간: 항상 말일에서 끊김
-// 첫구간=시작일~당월말, 이후 1일~말일, 마지막=1일~납입일
-function makeAccSegs(start,end){
-  const segs=[],endD=dateOnly(end);
-  let cur=dateOnly(start);
-  while(cur<=endD){
-    const me=monthEnd(cur);
-    me.setHours(12,0,0,0);
-    if(me<endD){
-      segs.push({start:new Date(cur),end:new Date(me),month:ym(me)});
-      const next=new Date(me.getFullYear(),me.getMonth()+1,1,12,0,0);
-      cur=next;
+// HSBC 전용: 3/26~6/25 계산, 납입일 6/26, 다음구간 6/26~9/25
+function makeHsbcPaySegs(startDate, endDate, freqM) {
+  const segs = [];
+  const endD = dateOnly(endDate);
+  let cur = dateOnly(startDate);
+  while (fmtD(cur) <= fmtD(endD)) {
+    const nextPay = addMonths(cur, freqM);
+    const pe = fmtD(nextPay) <= fmtD(endD) ? new Date(nextPay) : new Date(endD);
+    const segEnd = addDays(pe, -1);
+    segs.push({start: new Date(cur), end: new Date(segEnd), payDate: fmtD(pe)});
+    cur = new Date(pe);
+    if (fmtD(cur) >= fmtD(endD)) break;
+  }
+  return segs;
+}
+
+// 월결산 구간: 말일에서 끊김
+function makeAccSegs(start, end) {
+  const segs = [];
+  const endD = dateOnly(end);
+  let cur = dateOnly(start);
+  while (fmtD(cur) <= fmtD(endD)) {
+    const me = monthEnd(cur);
+    if (fmtD(me) < fmtD(endD)) {
+      segs.push({start: new Date(cur), end: new Date(me), month: ym(me)});
+      cur = new Date(me.getFullYear(), me.getMonth()+1, 1, 12, 0, 0);
     } else {
-      segs.push({start:new Date(cur),end:new Date(endD),month:ym(endD)});
+      segs.push({start: new Date(cur), end: new Date(endD), month: ym(endD)});
       break;
     }
   }
   return segs;
 }
 
-function copyTable(id){
-  const tbl=document.getElementById(id).closest('table');
-  const tsv=[...tbl.querySelectorAll('tr')].map(r=>[...r.querySelectorAll('th,td')].map(c=>c.innerText).join('\t')).join('\n');
-  navigator.clipboard.writeText(tsv).then(()=>alert('복사 완료!'));
+function copyTable(id) {
+  const tbl = document.getElementById(id).closest('table');
+  const tsv = [...tbl.querySelectorAll('tr')].map(r => [...r.querySelectorAll('th,td')].map(c => c.innerText).join('\t')).join('\n');
+  navigator.clipboard.writeText(tsv).then(() => alert('복사 완료!'));
 }
-function copyActiveView(panelId){
-  const tbl=document.getElementById(panelId).querySelector('.view-panel.active table');
-  if(!tbl) return;
-  const tsv=[...tbl.querySelectorAll('tr')].map(r=>[...r.querySelectorAll('th,td')].map(c=>c.innerText).join('\t')).join('\n');
-  navigator.clipboard.writeText(tsv).then(()=>alert('복사 완료!'));
+function copyActiveView(panelId) {
+  const tbl = document.getElementById(panelId).querySelector('.view-panel.active table');
+  if (!tbl) return;
+  const tsv = [...tbl.querySelectorAll('tr')].map(r => [...r.querySelectorAll('th,td')].map(c => c.innerText).join('\t')).join('\n');
+  navigator.clipboard.writeText(tsv).then(() => alert('복사 완료!'));
 }
 
-// ── 금리구간 테이블 생성 ──
-function buildRateRows(tbodyId,segs,defaultFn,spreadBps,decimals=3){
-  const tbody=document.getElementById(tbodyId);
-  tbody.innerHTML='';
-  const sp=spreadBps/100;
-  const step=decimals>=5?'0.00001':'0.001';
-  segs.forEach((seg,i)=>{
-    const base=typeof defaultFn==='function'?defaultFn(i):defaultFn;
-    const baseStr=base.toFixed(decimals);
-    const appliedStr=(base+sp).toFixed(decimals);
-    tbody.innerHTML+=`<tr>
-      <td>${i+1}구간</td>
-      <td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td>
-      <td><input type="number" id="${tbodyId}-r${i}" value="${baseStr}" step="${step}"
-        oninput="document.getElementById('${tbodyId}-a${i}').textContent=(+this.value+${sp}).toFixed(${decimals})"/></td>
-      <td id="${tbodyId}-a${i}">${appliedStr}</td>
-    </tr>`;
+// ── 금리구간 테이블 ──
+function buildRateRows(tbodyId, segs, defaultFn, spreadBps, decimals) {
+  decimals = decimals || 3;
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = '';
+  const sp = spreadBps / 100;
+  const step = decimals >= 5 ? '0.00001' : '0.001';
+  segs.forEach(function(seg, i) {
+    const base = typeof defaultFn === 'function' ? defaultFn(i) : defaultFn;
+    const baseStr = base.toFixed(decimals);
+    const appliedStr = (base + sp).toFixed(decimals);
+    tbody.innerHTML += '<tr>' +
+      '<td>' + (i+1) + '구간</td>' +
+      '<td>' + fmtD(seg.start) + ' ~ ' + fmtD(seg.end) + '</td>' +
+      '<td><input type="number" id="' + tbodyId + '-r' + i + '" value="' + baseStr + '" step="' + step + '" ' +
+        'oninput="document.getElementById(\'' + tbodyId + '-a' + i + '\').textContent=(+this.value+' + sp + ').toFixed(' + decimals + ')"/></td>' +
+      '<td id="' + tbodyId + '-a' + i + '">' + appliedStr + '</td>' +
+      '</tr>';
   });
 }
 
-// HSBC 전용 구간 생성: 시작일~(납입일-1), 납입일은 payDate로 표시, 다음구간은 납입일부터 시작
-function makeHsbcPaySegs(startDate, endDate, freqM){
-  const segs=[], endD=dateOnly(endDate);
-  let cur=dateOnly(startDate);
-  while(cur<=endD){
-    const payDate=addMonths(cur, freqM);
-    const pe=payDate<=endD?new Date(payDate):new Date(endD);
-    // 계산 종료일 = 납입일 - 1 (말일불산입이므로 납입일 전날까지)
-    const segEnd=addDays(pe,-1);
-    segs.push({start:new Date(cur), end:new Date(segEnd), payDate:fmtD(pe)});
-    cur=new Date(pe); // 다음 구간 시작 = 납입일
-  }
-  return segs;
+function buildFacRates() {
+  const s = dateOnly(document.getElementById('fac-s').value);
+  const e = dateOnly(document.getElementById('fac-e').value);
+  const sp = +document.getElementById('fac-spread').value;
+  const segs = makePaySegs(s, e, 12, true, true);
+  const defaults = [2.51, 2.53, 2.58];
+  buildRateRows('fac-rate-body', segs, function(i){ return defaults[i] != null ? defaults[i] : 2.58; }, sp, 3);
 }
-  const s=new Date(document.getElementById('fac-s').value);
-  const e=new Date(document.getElementById('fac-e').value);
-  const sp=+document.getElementById('fac-spread').value;
-  const segs=makePaySegs(s,e,12,true,true);
-  const defaults=[2.51,2.53,2.58];
-  buildRateRows('fac-rate-body',segs,i=>defaults[i]??2.58,sp,3);
+function buildCacRates() {
+  const s = dateOnly(document.getElementById('cac-s').value);
+  const e = dateOnly(document.getElementById('cac-e').value);
+  const sp = +document.getElementById('cac-spread').value;
+  const segs = makePaySegs(s, e, 1, true, true);
+  const defaults = [1.956, 1.930, 2.130, 2.330];
+  buildRateRows('cac-rate-body', segs, function(i){ return defaults[i] != null ? defaults[i] : +(2.0 + i*0.20).toFixed(3); }, sp, 3);
 }
-function buildCacRates(){
-  const s=new Date(document.getElementById('cac-s').value);
-  const e=new Date(document.getElementById('cac-e').value);
-  const sp=+document.getElementById('cac-spread').value;
-  const segs=makePaySegs(s,e,1,true,true);
-  const defaults=[1.956,1.930,2.130,2.330];
-  buildRateRows('cac-rate-body',segs,i=>defaults[i]??+(2.0+i*0.20).toFixed(3),sp,3);
+function buildScRates() {
+  const s = dateOnly(document.getElementById('sc-s').value);
+  const e = dateOnly(document.getElementById('sc-e').value);
+  const sp1 = +document.getElementById('sc-sp1').value;
+  const segs = makePaySegs(s, e, 1, false, true);
+  buildRateRows('sc-rate-body', segs, function(){ return 3.67636; }, sp1, 5);
 }
-function buildScRates(){
-  const s=new Date(document.getElementById('sc-s').value);
-  const e=new Date(document.getElementById('sc-e').value);
-  const sp1=+document.getElementById('sc-sp1').value;
-  const segs=makePaySegs(s,e,1,false,true);
-  // SC는 구간별 spread가 다르므로 적용금리는 계산 시 처리, 여기선 sp1 기준 표시
-  buildRateRows('sc-rate-body',segs,()=>3.67636,sp1,5);
-}
-function buildHsbcRates(){
-  const s=new Date(document.getElementById('hsbc-s').value);
-  const e=new Date(document.getElementById('hsbc-e').value);
-  const sp=+document.getElementById('hsbc-spread').value;
-  const segs=makeHsbcPaySegs(s,e,3);
-  buildRateRows('hsbc-rate-body',segs,()=>3.71088,sp,5);
+function buildHsbcRates() {
+  const s = dateOnly(document.getElementById('hsbc-s').value);
+  const e = dateOnly(document.getElementById('hsbc-e').value);
+  const sp = +document.getElementById('hsbc-spread').value;
+  const segs = makeHsbcPaySegs(s, e, 3);
+  buildRateRows('hsbc-rate-body', segs, function(){ return 3.71088; }, sp, 5);
 }
 
 // ── 공통 차입금 계산 ──
-function calcLoanGeneric(cfg){
-  const {paySegs,rateSegs,p,div,fx,payId,accId,hasFx,extraPayCols,extraAccCols,curPsDate,incEnd,isFac} = cfg;
-  const fxVal=hasFx?+document.getElementById(fx).value||null:null;
-  // 계산함수: 시설대=ROUND 0자리, 외화=ROUNDDOWN 3자리
-  const calc=(v)=>isFac?roundFac(v):rd3(v);
-  const fmtAmt=(v)=>isFac?fmtInt(v):fmt3(v);
+function calcLoanGeneric(cfg) {
+  const paySegs = cfg.paySegs;
+  const rateSegs = cfg.rateSegs;
+  const p = cfg.p;
+  const div = cfg.div;
+  const fx = cfg.fx;
+  const payId = cfg.payId;
+  const accId = cfg.accId;
+  const hasFx = cfg.hasFx;
+  const extraPayCols = cfg.extraPayCols;
+  const extraAccCols = cfg.extraAccCols;
+  const curPsDate = cfg.curPsDate;
+  const incEnd = cfg.incEnd;
+  const isFac = cfg.isFac;
+
+  const calc = function(v){ return isFac ? roundFac(v) : rd3(v); };
+  const fmtAmt = function(v){ return isFac ? fmtInt(v) : fmt3(v); };
+  const fxVal = hasFx ? (+document.getElementById(fx).value || null) : null;
 
   // 납입 스케줄
-  let payRows='',payTot=0;
-  paySegs.forEach((seg,i)=>{
-    const rs=rateSegs[i]; if(!rs) return;
-    const d=daysCount(seg.start,seg.end,incEnd);
-    const iv=calc(p*rs.rate*d/div); payTot+=iv;
-    const isCur=curPsDate&&fmtD(seg.start)===curPsDate;
-    let row=`<tr class="${isCur?'cur-period':''}"><td>${i+1}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${seg.payDate}</td>`;
-    row+=extraPayCols(rs);
-    row+=`<td>${d}일</td><td class="td-r">${fmtAmt(iv)}</td>`;
-    if(hasFx) row+=`<td class="td-r">${fxVal?fmt0(iv*fxVal):'-'}</td>`;
-    row+=`</tr>`;
-    payRows+=row;
+  let payRows = '', payTot = 0, payDays = 0;
+  paySegs.forEach(function(seg, i) {
+    const rs = rateSegs[i];
+    if (!rs) return;
+    const d = daysCount(seg.start, seg.end, incEnd);
+    const iv = calc(p * rs.rate * d / div);
+    payTot += iv;
+    payDays += d;
+    const isCur = curPsDate && fmtD(seg.start) === curPsDate;
+    let row = '<tr class="' + (isCur ? 'cur-period' : '') + '">' +
+      '<td>' + (i+1) + '</td>' +
+      '<td>' + fmtD(seg.start) + ' ~ ' + fmtD(seg.end) + '</td>' +
+      '<td>' + seg.payDate + '</td>' +
+      extraPayCols(rs) +
+      '<td>' + d + '일</td>' +
+      '<td class="td-r">' + fmtAmt(iv) + '</td>';
+    if (hasFx) row += '<td class="td-r">' + (fxVal ? fmt0(iv * fxVal) : '-') + '</td>';
+    row += '</tr>';
+    payRows += row;
   });
-  const hdr=extraPayCols(rateSegs[0]||{}).split('<td>').length-1;
-  payRows+=`<tr class="total-row"><td colspan="${3+hdr}">합계</td><td class="td-r">${fmtAmt(payTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(payTot*fxVal):'-'}</td>`:''}</tr>`;
-  document.getElementById(payId).innerHTML=payRows;
+  const hdr = extraPayCols(rateSegs[0] || {}).split('<td>').length - 1;
+  payRows += '<tr class="total-row"><td colspan="' + (3 + hdr) + '">합계</td>' +
+    '<td class="td-r">' + payDays + '일</td>' +
+    '<td class="td-r">' + fmtAmt(payTot) + '</td>' +
+    (hasFx ? '<td class="td-r">' + (fxVal ? fmt0(payTot * fxVal) : '-') + '</td>' : '') +
+    '</tr>';
+  document.getElementById(payId).innerHTML = payRows;
 
-  // 월결산 (이번 주기)
-  if(!curPsDate){
-    document.getElementById(accId).innerHTML='<tr><td colspan="10" style="color:#aaa;padding:16px;text-align:center">이번 주기 시작일을 입력하세요</td></tr>';
+  // 월결산
+  if (!curPsDate) {
+    document.getElementById(accId).innerHTML = '<tr><td colspan="10" style="color:#aaa;padding:16px;text-align:center">이번 주기 시작일을 입력하세요</td></tr>';
     return;
   }
-  const curIdx=paySegs.findIndex(s=>fmtD(s.start)===curPsDate);
-  if(curIdx<0){
-    document.getElementById(accId).innerHTML='<tr><td colspan="10" style="color:#e53935;padding:16px;text-align:center">이번 주기 시작일이 스케줄에 없습니다</td></tr>';
+  const curIdx = paySegs.findIndex(function(s){ return fmtD(s.start) === curPsDate; });
+  if (curIdx < 0) {
+    document.getElementById(accId).innerHTML = '<tr><td colspan="10" style="color:#e53935;padding:16px;text-align:center">이번 주기 시작일이 스케줄에 없습니다</td></tr>';
     return;
   }
-  const curSeg=paySegs[curIdx], curRs=rateSegs[curIdx];
-  // 월결산: 시작일~당월말, 다음달1일~납입일 순으로
-  const accSegs=makeAccSegs(curSeg.start,curSeg.end);
-  let accRows='',accTot=0;
-  accSegs.forEach(seg=>{
-    const isLastSeg=fmtD(seg.end)===curSeg.payDate;
-    // 말일까지 구간: incEnd 적용 / 마지막 구간(납입일): incEnd 적용
-    const sd=daysCount(seg.start,seg.end,incEnd);
-    const si=calc(p*curRs.rate*sd/div); accTot+=si;
-    const isPay=fmtD(seg.end)===curSeg.payDate;
-    const isMonthEnd=fmtD(seg.end)===fmtD(monthEnd(seg.end));
-    let row=`<tr class="${isPay?'pay-row':'acc-row'}"><td>${seg.month}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td>`;
-    row+=extraAccCols(curRs);
-    row+=`<td>${sd}일</td><td class="td-r">${fmt3(si)}</td>`;
-    if(hasFx) row+=`<td class="td-r">${fxVal?fmt0(si*fxVal):'-'}</td>`;
-    row+=`<td>${isPay?'납입월':(isMonthEnd?'미지급비용':'미지급비용')}</td></tr>`;
-    accRows+=row;
+  const curSeg = paySegs[curIdx];
+  const curRs = rateSegs[curIdx];
+  const accSegs = makeAccSegs(curSeg.start, curSeg.end);
+  let accRows = '', accTot = 0, accDays = 0;
+  accSegs.forEach(function(seg) {
+    const sd = daysCount(seg.start, seg.end, incEnd);
+    const si = calc(p * curRs.rate * sd / div);
+    accTot += si;
+    accDays += sd;
+    const isPay = fmtD(seg.end) === curSeg.payDate;
+    let row = '<tr class="' + (isPay ? 'pay-row' : 'acc-row') + '">' +
+      '<td>' + seg.month + '</td>' +
+      '<td>' + fmtD(seg.start) + ' ~ ' + fmtD(seg.end) + '</td>' +
+      extraAccCols(curRs) +
+      '<td>' + sd + '일</td>' +
+      '<td class="td-r">' + fmtAmt(si) + '</td>';
+    if (hasFx) row += '<td class="td-r">' + (fxVal ? fmt0(si * fxVal) : '-') + '</td>';
+    row += '<td>' + (isPay ? '납입월' : '미지급비용') + '</td></tr>';
+    accRows += row;
   });
-  const aHdr=extraAccCols(curRs).split('<td>').length-1;
-  accRows+=`<tr class="total-row"><td colspan="${2+aHdr}">합계</td><td class="td-r">${accDays}일</td><td class="td-r">${fmtAmt(accTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(accTot*fxVal):'-'}</td>`:''}<td></td></tr>`;
-  document.getElementById(accId).innerHTML=accRows;
+  const aHdr = extraAccCols(curRs).split('<td>').length - 1;
+  accRows += '<tr class="total-row"><td colspan="' + (2 + aHdr) + '">합계</td>' +
+    '<td class="td-r">' + accDays + '일</td>' +
+    '<td class="td-r">' + fmtAmt(accTot) + '</td>' +
+    (hasFx ? '<td class="td-r">' + (fxVal ? fmt0(accTot * fxVal) : '-') + '</td>' : '') +
+    '<td></td></tr>';
+  document.getElementById(accId).innerHTML = accRows;
 }
 
 // ══ 공모사채 ══
-function calcGongmo(){
-  const s=new Date(document.getElementById('gm-s').value);
-  const e1=new Date(document.getElementById('gm-e1').value);
-  const e2=new Date(document.getElementById('gm-e2').value);
-  const freq=+document.getElementById('gm-freq').value;
-  const p1=+document.getElementById('gm1-p').value,r1=+document.getElementById('gm1-r').value/100;
-  const p2=+document.getElementById('gm2-p').value,r2=+document.getElementById('gm2-r').value/100;
-  const perYear=freq===0?1:12/freq;
-  const maxE=e1>e2?e1:e2;
-  const segs=makePaySegs(s,maxE,freq,false,true);
-  let rows='',tot1=0,tot2=0;
-  segs.forEach((seg,i)=>{
-    const i1=seg.start<=e1?(freq===0?rd3(p1*r1):rd3(p1*r1/perYear)):0;
-    const i2=seg.start<=e2?(freq===0?rd3(p2*r2):rd3(p2*r2/perYear)):0;
-    if(!i1&&!i2) return;
-    tot1+=i1; tot2+=i2;
-    rows+=`<tr class="pay-row"><td>${i+1}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${seg.payDate}</td><td class="td-r">${i1?fmt3(i1):'-'}</td><td class="td-r">${i2?fmt3(i2):'-'}</td><td class="td-r">${fmt3(i1+i2)}</td></tr>`;
+function calcGongmo() {
+  const s = dateOnly(document.getElementById('gm-s').value);
+  const e1 = dateOnly(document.getElementById('gm-e1').value);
+  const e2 = dateOnly(document.getElementById('gm-e2').value);
+  const freq = +document.getElementById('gm-freq').value;
+  const p1 = +document.getElementById('gm1-p').value, r1 = +document.getElementById('gm1-r').value / 100;
+  const p2 = +document.getElementById('gm2-p').value, r2 = +document.getElementById('gm2-r').value / 100;
+  const perYear = freq === 0 ? 1 : 12 / freq;
+  const maxE = fmtD(e1) > fmtD(e2) ? e1 : e2;
+  const segs = makePaySegs(s, maxE, freq, false, true);
+  let rows = '', tot1 = 0, tot2 = 0;
+  segs.forEach(function(seg, i) {
+    const i1 = fmtD(seg.start) <= fmtD(e1) ? (freq === 0 ? rd3(p1*r1) : rd3(p1*r1/perYear)) : 0;
+    const i2 = fmtD(seg.start) <= fmtD(e2) ? (freq === 0 ? rd3(p2*r2) : rd3(p2*r2/perYear)) : 0;
+    if (!i1 && !i2) return;
+    tot1 += i1; tot2 += i2;
+    rows += '<tr class="pay-row"><td>' + (i+1) + '</td><td>' + fmtD(seg.start) + ' ~ ' + fmtD(seg.end) + '</td><td>' + seg.payDate + '</td>' +
+      '<td class="td-r">' + (i1 ? fmt3(i1) : '-') + '</td>' +
+      '<td class="td-r">' + (i2 ? fmt3(i2) : '-') + '</td>' +
+      '<td class="td-r">' + fmt3(i1+i2) + '</td></tr>';
   });
-  rows+=`<tr class="total-row"><td colspan="3">합계</td><td class="td-r">${fmt3(tot1)}</td><td class="td-r">${fmt3(tot2)}</td><td class="td-r">${fmt3(tot1+tot2)}</td></tr>`;
-  document.getElementById('gm-result').innerHTML=rows;
+  rows += '<tr class="total-row"><td colspan="3">합계</td><td class="td-r">' + fmt3(tot1) + '</td><td class="td-r">' + fmt3(tot2) + '</td><td class="td-r">' + fmt3(tot1+tot2) + '</td></tr>';
+  document.getElementById('gm-result').innerHTML = rows;
 }
 
 // ══ 사무라이 ══
-function calcSamurai(){
-  const s=new Date(document.getElementById('sam-s').value);
-  const freq=+document.getElementById('sam-freq').value;
-  const fx=+document.getElementById('sam-fx').value||null;
-  const tr=[1,2,3,4].map(i=>({p:+document.getElementById(`sam${i}-p`).value,r:+document.getElementById(`sam${i}-r`).value/100,e:new Date(document.getElementById(`sam${i}-e`).value)}));
-  const perYear=freq===0?1:12/freq;
-  const maxE=tr.reduce((m,t)=>t.e>m?t.e:m,tr[0].e);
-  const segs=makePaySegs(s,maxE,freq,false,true);
-  let rows='',totals=new Array(4).fill(0),grand=0;
-  segs.forEach((seg,idx)=>{
-    const iArr=tr.map(t=>seg.start<=t.e?(freq===0?rd3(t.p*t.r):rd3(t.p*t.r/perYear)):0);
-    const tot=iArr.reduce((a,b)=>a+b,0); if(!tot) return;
-    iArr.forEach((v,i)=>totals[i]+=v); grand+=tot;
-    rows+=`<tr class="pay-row"><td>${idx+1}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${seg.payDate}</td>${iArr.map(v=>`<td class="td-r">${v?fmt3(v):'-'}</td>`).join('')}<td class="td-r">${fmt3(tot)}</td><td class="td-r">${fx?fmt0(tot*fx):'-'}</td></tr>`;
+function calcSamurai() {
+  const s = dateOnly(document.getElementById('sam-s').value);
+  const freq = +document.getElementById('sam-freq').value;
+  const fx = +document.getElementById('sam-fx').value || null;
+  const tr = [1,2,3,4].map(function(i){ return {
+    p: +document.getElementById('sam'+i+'-p').value,
+    r: +document.getElementById('sam'+i+'-r').value / 100,
+    e: dateOnly(document.getElementById('sam'+i+'-e').value)
+  }; });
+  const perYear = freq === 0 ? 1 : 12 / freq;
+  const maxE = tr.reduce(function(m,t){ return fmtD(t.e) > fmtD(m) ? t.e : m; }, tr[0].e);
+  const segs = makePaySegs(s, maxE, freq, false, true);
+  let rows = '', totals = [0,0,0,0], grand = 0;
+  segs.forEach(function(seg, idx) {
+    const iArr = tr.map(function(t){ return fmtD(seg.start) <= fmtD(t.e) ? (freq===0 ? rd3(t.p*t.r) : rd3(t.p*t.r/perYear)) : 0; });
+    const tot = iArr.reduce(function(a,b){ return a+b; }, 0);
+    if (!tot) return;
+    iArr.forEach(function(v,i){ totals[i] += v; });
+    grand += tot;
+    rows += '<tr class="pay-row"><td>' + (idx+1) + '</td><td>' + fmtD(seg.start) + ' ~ ' + fmtD(seg.end) + '</td><td>' + seg.payDate + '</td>' +
+      iArr.map(function(v){ return '<td class="td-r">' + (v ? fmt3(v) : '-') + '</td>'; }).join('') +
+      '<td class="td-r">' + fmt3(tot) + '</td><td class="td-r">' + (fx ? fmt0(tot*fx) : '-') + '</td></tr>';
   });
-  rows+=`<tr class="total-row"><td colspan="3">합계</td>${totals.map(v=>`<td class="td-r">${fmt3(v)}</td>`).join('')}<td class="td-r">${fmt3(grand)}</td><td class="td-r">${fx?fmt0(grand*fx):'-'}</td></tr>`;
-  document.getElementById('sam-result').innerHTML=rows;
+  rows += '<tr class="total-row"><td colspan="3">합계</td>' +
+    totals.map(function(v){ return '<td class="td-r">' + fmt3(v) + '</td>'; }).join('') +
+    '<td class="td-r">' + fmt3(grand) + '</td><td class="td-r">' + (fx ? fmt0(grand*fx) : '-') + '</td></tr>';
+  document.getElementById('sam-result').innerHTML = rows;
 }
 
-// ══ 시설자금 (익일기산, 말일산입) ══
-function calcFac(){
-  const s=new Date(document.getElementById('fac-s').value);
-  const e=new Date(document.getElementById('fac-e').value);
-  const psVal=document.getElementById('fac-ps').value;
-  const freq=+document.getElementById('fac-freq').value;
-  const p=+document.getElementById('fac-p').value;
-  const sp=+document.getElementById('fac-spread').value/100;
-  const paySegs=makePaySegs(s,e,freq,true,true);
-  const yearSegs=makePaySegs(s,e,12,true,true);
-  const rateSegs=paySegs.map(seg=>{
-    const yi=yearSegs.findIndex(ys=>new Date(seg.start)>=new Date(ys.start)&&new Date(seg.start)<=new Date(ys.end));
-    const idx=Math.max(0,yi>=0?yi:yearSegs.length-1);
-    const base=+document.getElementById(`fac-rate-body-r${idx}`)?.value||2.51;
-    return {rate:(base+sp)/100,base,applied:(base+sp)};
+// ══ 시설자금 (익일기산, 말일산입, ROUND 0자리) ══
+function calcFac() {
+  const s = dateOnly(document.getElementById('fac-s').value);
+  const e = dateOnly(document.getElementById('fac-e').value);
+  const psVal = document.getElementById('fac-ps').value;
+  const freq = +document.getElementById('fac-freq').value;
+  const p = +document.getElementById('fac-p').value;
+  const sp = +document.getElementById('fac-spread').value / 100;
+  const paySegs = makePaySegs(s, e, freq, true, true);
+  const yearSegs = makePaySegs(s, e, 12, true, true);
+  const rateSegs = paySegs.map(function(seg) {
+    const yi = yearSegs.findIndex(function(ys){ return fmtD(seg.start) >= fmtD(ys.start) && fmtD(seg.start) <= fmtD(ys.end); });
+    const idx = yi >= 0 ? yi : yearSegs.length - 1;
+    const el = document.getElementById('fac-rate-body-r' + idx);
+    const base = el ? +el.value : 2.51;
+    return {rate: (base + sp) / 100, base: base, applied: base + sp};
   });
-  calcLoanGeneric({paySegs,rateSegs,p,div:365,fx:null,payId:'fac-pay',accId:'fac-acc',hasFx:false,
-    curPsDate:psVal||null,incEnd:true,isFac:true,
-    extraPayCols:rs=>`<td>${rs.base?.toFixed(3)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
+  calcLoanGeneric({
+    paySegs: paySegs, rateSegs: rateSegs, p: p, div: 365,
+    fx: null, payId: 'fac-pay', accId: 'fac-acc', hasFx: false,
+    curPsDate: psVal || null, incEnd: true, isFac: true,
+    extraPayCols: function(rs){ return '<td>' + (rs.base ? rs.base.toFixed(3) : '-') + '%</td><td>' + (rs.applied ? rs.applied.toFixed(3) : '-') + '%</td>'; },
+    extraAccCols: function(rs){ return '<td>' + (rs.applied ? rs.applied.toFixed(3) : '-') + '%</td>'; }
+  });
 }
 
-// ══ CACIB (익일기산, 말일산입) ══
-function calcCac(){
-  const s=new Date(document.getElementById('cac-s').value);
-  const e=new Date(document.getElementById('cac-e').value);
-  const psVal=document.getElementById('cac-ps').value;
-  const p=+document.getElementById('cac-p').value;
-  const sp=+document.getElementById('cac-spread').value/100;
-  const paySegs=makePaySegs(s,e,1,true,true);
-  const rateSegs=paySegs.map((seg,i)=>{
-    const base=+document.getElementById(`cac-rate-body-r${i}`)?.value||1.956;
-    return {rate:(base+sp)/100,base,applied:(base+sp)};
+// ══ CACIB (익일기산, 말일산입, ROUNDDOWN 3자리) ══
+function calcCac() {
+  const s = dateOnly(document.getElementById('cac-s').value);
+  const e = dateOnly(document.getElementById('cac-e').value);
+  const psVal = document.getElementById('cac-ps').value;
+  const p = +document.getElementById('cac-p').value;
+  const sp = +document.getElementById('cac-spread').value / 100;
+  const paySegs = makePaySegs(s, e, 1, true, true);
+  const rateSegs = paySegs.map(function(seg, i) {
+    const el = document.getElementById('cac-rate-body-r' + i);
+    const base = el ? +el.value : 1.956;
+    return {rate: (base + sp) / 100, base: base, applied: base + sp};
   });
-  calcLoanGeneric({paySegs,rateSegs,p,div:360,fx:'cac-fx',payId:'cac-pay',accId:'cac-acc',hasFx:true,
-    curPsDate:psVal||null,incEnd:true,
-    extraPayCols:rs=>`<td>${rs.base?.toFixed(3)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
+  calcLoanGeneric({
+    paySegs: paySegs, rateSegs: rateSegs, p: p, div: 360,
+    fx: 'cac-fx', payId: 'cac-pay', accId: 'cac-acc', hasFx: true,
+    curPsDate: psVal || null, incEnd: true, isFac: false,
+    extraPayCols: function(rs){ return '<td>' + (rs.base ? rs.base.toFixed(3) : '-') + '%</td><td>' + (rs.applied ? rs.applied.toFixed(3) : '-') + '%</td>'; },
+    extraAccCols: function(rs){ return '<td>' + (rs.applied ? rs.applied.toFixed(3) : '-') + '%</td>'; }
+  });
 }
 
-// ══ SC (당일기산, 말일산입) ══
-function calcSC(){
-  const s=new Date(document.getElementById('sc-s').value);
-  const e=new Date(document.getElementById('sc-e').value);
-  const psVal=document.getElementById('sc-ps').value;
-  const p=+document.getElementById('sc-p').value;
-  const sp1=+document.getElementById('sc-sp1').value/100;
-  const sp2=+document.getElementById('sc-sp2').value/100;
-  const m1e=addMonths(s,1);
-  const paySegs=makePaySegs(s,e,1,false,true);
-  const rateSegs=paySegs.map((seg,i)=>{
-    const sofr=+document.getElementById(`sc-rate-body-r${i}`)?.value||3.67636;
-    const sp=new Date(seg.start)<=m1e?sp1:sp2;
-    return {rate:(sofr+sp)/100,base:sofr,applied:(sofr+sp)};
+// ══ SC (당일기산, 말일산입, ROUNDDOWN 3자리) ══
+function calcSC() {
+  const s = dateOnly(document.getElementById('sc-s').value);
+  const e = dateOnly(document.getElementById('sc-e').value);
+  const psVal = document.getElementById('sc-ps').value;
+  const p = +document.getElementById('sc-p').value;
+  const sp1 = +document.getElementById('sc-sp1').value / 100;
+  const sp2 = +document.getElementById('sc-sp2').value / 100;
+  const m1e = addMonths(s, 1);
+  const paySegs = makePaySegs(s, e, 1, false, true);
+  const rateSegs = paySegs.map(function(seg, i) {
+    const el = document.getElementById('sc-rate-body-r' + i);
+    const sofr = el ? +el.value : 3.67636;
+    const sp = fmtD(seg.start) <= fmtD(m1e) ? sp1 : sp2;
+    return {rate: (sofr + sp) / 100, base: sofr, applied: sofr + sp};
   });
-  calcLoanGeneric({paySegs,rateSegs,p,div:360,fx:'sc-fx',payId:'sc-pay',accId:'sc-acc',hasFx:true,
-    curPsDate:psVal||null,incEnd:true,
-    extraPayCols:rs=>`<td>${rs.base?.toFixed(5)||'-'}%</td><td>${rs.applied?.toFixed(5)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(5)||'-'}%</td>`});
+  calcLoanGeneric({
+    paySegs: paySegs, rateSegs: rateSegs, p: p, div: 360,
+    fx: 'sc-fx', payId: 'sc-pay', accId: 'sc-acc', hasFx: true,
+    curPsDate: psVal || null, incEnd: true, isFac: false,
+    extraPayCols: function(rs){ return '<td>' + (rs.base ? rs.base.toFixed(5) : '-') + '%</td><td>' + (rs.applied ? rs.applied.toFixed(5) : '-') + '%</td>'; },
+    extraAccCols: function(rs){ return '<td>' + (rs.applied ? rs.applied.toFixed(5) : '-') + '%</td>'; }
+  });
 }
 
-// ══ HSBC (당일기산, 말일불산입) ══
-function calcHSBC(){
-  const s=new Date(document.getElementById('hsbc-s').value);
-  const e=new Date(document.getElementById('hsbc-e').value);
-  const psVal=document.getElementById('hsbc-ps').value;
-  const p=+document.getElementById('hsbc-p').value;
-  const sp=+document.getElementById('hsbc-spread').value/100;
-  const paySegs=makePaySegs(s,e,3,false,false);
-  const rateSegs=paySegs.map((seg,i)=>{
-    const sofr=+document.getElementById(`hsbc-rate-body-r${i}`)?.value||3.67636;
-    return {rate:(sofr+sp)/100,base:sofr,applied:(sofr+sp)};
+// ══ HSBC (당일기산, 말일불산입, ROUNDDOWN 3자리) ══
+function calcHSBC() {
+  const s = dateOnly(document.getElementById('hsbc-s').value);
+  const e = dateOnly(document.getElementById('hsbc-e').value);
+  const psVal = document.getElementById('hsbc-ps').value;
+  const p = +document.getElementById('hsbc-p').value;
+  const sp = +document.getElementById('hsbc-spread').value / 100;
+  const paySegs = makeHsbcPaySegs(s, e, 3);
+  const rateSegs = paySegs.map(function(seg, i) {
+    const el = document.getElementById('hsbc-rate-body-r' + i);
+    const sofr = el ? +el.value : 3.71088;
+    return {rate: (sofr + sp) / 100, base: sofr, applied: sofr + sp};
   });
-  calcLoanGeneric({paySegs,rateSegs,p,div:360,fx:'hsbc-fx',payId:'hsbc-pay',accId:'hsbc-acc',hasFx:true,
-    curPsDate:psVal||null,incEnd:false,
-    extraPayCols:rs=>`<td>${rs.base?.toFixed(5)||'-'}%</td><td>${rs.applied?.toFixed(5)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(5)||'-'}%</td>`});
+  calcLoanGeneric({
+    paySegs: paySegs, rateSegs: rateSegs, p: p, div: 360,
+    fx: 'hsbc-fx', payId: 'hsbc-pay', accId: 'hsbc-acc', hasFx: true,
+    curPsDate: psVal || null, incEnd: true, isFac: false,
+    extraPayCols: function(rs){ return '<td>' + (rs.base ? rs.base.toFixed(5) : '-') + '%</td><td>' + (rs.applied ? rs.applied.toFixed(5) : '-') + '%</td>'; },
+    extraAccCols: function(rs){ return '<td>' + (rs.applied ? rs.applied.toFixed(5) : '-') + '%</td>'; }
+  });
 }
 </script>
 </body>
