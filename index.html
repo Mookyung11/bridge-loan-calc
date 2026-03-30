@@ -580,8 +580,9 @@ function calcLoanGeneric(cfg){
   const accSegs=makeAccSegs(curSeg.start,curSeg.end);
   let accRows='',accTot=0;
   accSegs.forEach(seg=>{
-    // 월결산은 항상 말일까지 계산(말일산입) - 마지막 구간도 납입일까지
-    const sd=daysCount(seg.start,seg.end,true);
+    const isLastSeg=fmtD(seg.end)===curSeg.payDate;
+    // 말일까지 구간: incEnd 적용 / 마지막 구간(납입일): incEnd 적용
+    const sd=daysCount(seg.start,seg.end,incEnd);
     const si=calc(p*curRs.rate*sd/div); accTot+=si;
     const isPay=fmtD(seg.end)===curSeg.payDate;
     const isMonthEnd=fmtD(seg.end)===fmtD(monthEnd(seg.end));
