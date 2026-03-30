@@ -507,7 +507,20 @@ function buildRateRows(tbodyId,segs,defaultFn,spreadBps,decimals=3){
   });
 }
 
-function buildFacRates(){
+// HSBC 전용 구간 생성: 시작일~(납입일-1), 납입일은 payDate로 표시, 다음구간은 납입일부터 시작
+function makeHsbcPaySegs(startDate, endDate, freqM){
+  const segs=[], endD=dateOnly(endDate);
+  let cur=dateOnly(startDate);
+  while(cur<=endD){
+    const payDate=addMonths(cur, freqM);
+    const pe=payDate<=endD?new Date(payDate):new Date(endD);
+    // 계산 종료일 = 납입일 - 1 (말일불산입이므로 납입일 전날까지)
+    const segEnd=addDays(pe,-1);
+    segs.push({start:new Date(cur), end:new Date(segEnd), payDate:fmtD(pe)});
+    cur=new Date(pe); // 다음 구간 시작 = 납입일
+  }
+  return segs;
+}
   const s=new Date(document.getElementById('fac-s').value);
   const e=new Date(document.getElementById('fac-e').value);
   const sp=+document.getElementById('fac-spread').value;
@@ -535,7 +548,7 @@ function buildHsbcRates(){
   const s=new Date(document.getElementById('hsbc-s').value);
   const e=new Date(document.getElementById('hsbc-e').value);
   const sp=+document.getElementById('hsbc-spread').value;
-  const segs=makePaySegs(s,e,3,false,false);
+  const segs=makeHsbcPaySegs(s,e,3);
   buildRateRows('hsbc-rate-body',segs,()=>3.71088,sp,5);
 }
 
@@ -594,7 +607,7 @@ function calcLoanGeneric(cfg){
     accRows+=row;
   });
   const aHdr=extraAccCols(curRs).split('<td>').length-1;
-  accRows+=`<tr class="total-row"><td colspan="${2+aHdr}">합계</td><td class="td-r">${fmt3(accTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(accTot*fxVal):'-'}</td>`:''}<td></td></tr>`;
+  accRows+=`<tr class="total-row"><td colspan="${2+aHdr}">합계</td><td class="td-r">${accDays}일</td><td class="td-r">${fmtAmt(accTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(accTot*fxVal):'-'}</td>`:''}<td></td></tr>`;
   document.getElementById(accId).innerHTML=accRows;
 }
 
