@@ -410,7 +410,18 @@ const fmt0=n=>isNaN(n)||n==null?'-':Math.round(n).toLocaleString('ko-KR');
 const fmtD=d=>d instanceof Date?d.toISOString().slice(0,10):d;
 const addMonths=(d,m)=>{const r=new Date(d);r.setMonth(r.getMonth()+m);return r;};
 const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
-const monthEnd=d=>new Date(d.getFullYear(),d.getMonth()+1,0);
+// 말일 계산 - timezone 안전하게
+const monthEnd=d=>{
+  const dt=d instanceof Date?d:new Date(d);
+  return new Date(dt.getFullYear(), dt.getMonth()+1, 0, 12, 0, 0);
+};
+
+// 날짜 비교용 - 시간 제거
+const dateOnly=d=>{
+  const dt=d instanceof Date?new Date(d):new Date(d);
+  dt.setHours(12,0,0,0);
+  return dt;
+};
 const ym=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 
 // 일수 계산
@@ -445,16 +456,16 @@ function makePaySegs(startDate, endDate, freqM, nextDay, incEnd){
 // 월결산 구간: 항상 말일에서 끊김
 // 첫구간=시작일~당월말, 이후 1일~말일, 마지막=1일~납입일
 function makeAccSegs(start,end){
-  const segs=[],endD=new Date(end);
-  let cur=new Date(start);
+  const segs=[],endD=dateOnly(end);
+  let cur=dateOnly(start);
   while(cur<=endD){
     const me=monthEnd(cur);
+    me.setHours(12,0,0,0);
     if(me<endD){
-      // 아직 납입일 전 → 말일까지
       segs.push({start:new Date(cur),end:new Date(me),month:ym(me)});
-      cur=new Date(me.getFullYear(),me.getMonth()+1,1); // 다음달 1일
+      const next=new Date(me.getFullYear(),me.getMonth()+1,1,12,0,0);
+      cur=next;
     } else {
-      // 마지막 구간 → 납입일까지
       segs.push({start:new Date(cur),end:new Date(endD),month:ym(endD)});
       break;
     }
