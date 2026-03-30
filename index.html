@@ -170,7 +170,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="notice">
         <b>산업은행 시설자금대출</b><br>
         · 통화: KRW &nbsp;|&nbsp; 금리: 국고채 1년 + 13bps (매 1년 업데이트) &nbsp;|&nbsp; <b>이자납입일: 매월 12일</b><br>
-        · 기산일: <b>개시일 익일</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: 원금 × 금리 × 일수 / 365 &nbsp;|&nbsp; ROUNDDOWN 소수점 3자리
+        · 기산일: <b>개시일 익일</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: <b>=ROUND(원금 × 금리 × 일수 / 365, 0)</b>
       </div>
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#fce4ec;color:#c62828">KRW</span></div>
@@ -221,7 +221,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="notice">
         <b>CACIB Term Loan</b><br>
         · 통화: EUR &nbsp;|&nbsp; 금리: EURIBOR 1M + 57bps (매 1개월 업데이트) &nbsp;|&nbsp; <b>이자납입일: 매월 23일</b> &nbsp;|&nbsp; 기준금리 확정: 실행일 2영업일 전<br>
-        · 기산일: <b>개시일 익일</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: 원금 × 금리 × 일수 / 360 &nbsp;|&nbsp; ROUNDDOWN 소수점 3자리
+        · 기산일: <b>개시일 익일</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: <b>=ROUNDDOWN(원금 × 금리 × 일수 / 360, 3)</b>
       </div>
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#e8f5e9;color:#2e7d32">EUR</span></div>
@@ -270,7 +270,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="notice">
         <b>SC Term Loan</b><br>
         · 통화: USD &nbsp;|&nbsp; 금리: SOFR 1M + 40bps(0~1개월) / +45bps(이후) (매 1개월 업데이트) &nbsp;|&nbsp; <b>이자납입일: 매월 26일</b> &nbsp;|&nbsp; 기준금리 확정: 실행일<br>
-        · 기산일: <b>개시일 당일 포함</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: 원금 × 금리 × 일수 / 360 &nbsp;|&nbsp; ROUNDDOWN 소수점 3자리
+        · 기산일: <b>개시일 당일 포함</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: <b>=ROUNDDOWN(원금 × 금리 × 일수 / 360, 3)</b>
       </div>
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#e3f0ff;color:#1565c0">USD</span></div>
@@ -287,8 +287,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <table class="rate-table">
           <thead><tr><th>구간</th><th>적용기간</th><th>SOFR 1M (%)</th><th>적용금리 (%)</th></tr></thead>
           <tbody id="sc-rate-body"></tbody>
-        </table>
-        <div class="btns">
+        </table>        <div class="btns">
           <button class="btn btn-build" onclick="buildScRates()">금리구간 생성</button>
           <button class="btn btn-calc" onclick="calcSC()">계산</button>
         </div>
@@ -320,7 +319,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
       <div class="notice">
         <b>HSBC Term Loan</b><br>
         · 통화: USD &nbsp;|&nbsp; 금리: SOFR 3M + 55bps (매 3개월 업데이트) &nbsp;|&nbsp; <b>이자납입일: 매 3개월 26일</b> &nbsp;|&nbsp; 기준금리 확정: 실행일<br>
-        · 기산일: <b>개시일 당일 포함</b> ~ 납입일 당일 <b>불포함</b> (<b>말일불산입</b>) &nbsp;|&nbsp; 계산식: 원금 × 금리 × 일수 / 360 &nbsp;|&nbsp; ROUNDDOWN 소수점 3자리
+        · 기산일: <b>개시일 당일 포함</b> ~ 납입일 당일 <b>불포함</b> (<b>말일불산입</b>) &nbsp;|&nbsp; 계산식: <b>=ROUNDDOWN(원금 × 금리 × 일수 / 360, 3)</b>
       </div>
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#e3f0ff;color:#1565c0">USD</span></div>
@@ -404,8 +403,11 @@ document.addEventListener('click',e=>{
 });
 
 // ── 유틸 ──
+// 반올림: 시설대 ROUND 0자리, 외화 ROUNDDOWN 3자리
+const roundFac=n=>Math.round(n);
 const rd3=n=>Math.floor(n*1000)/1000;
 const fmt3=n=>isNaN(n)||n==null?'-':n.toLocaleString('ko-KR',{minimumFractionDigits:3,maximumFractionDigits:3});
+const fmtInt=n=>isNaN(n)||n==null?'-':Math.round(n).toLocaleString('ko-KR');
 const fmt0=n=>isNaN(n)||n==null?'-':Math.round(n).toLocaleString('ko-KR');
 const fmtD=d=>d instanceof Date?d.toISOString().slice(0,10):d;
 const addMonths=(d,m)=>{const r=new Date(d);r.setMonth(r.getMonth()+m);return r;};
@@ -486,18 +488,21 @@ function copyActiveView(panelId){
 }
 
 // ── 금리구간 테이블 생성 ──
-function buildRateRows(tbodyId,segs,defaultFn,spreadBps){
+function buildRateRows(tbodyId,segs,defaultFn,spreadBps,decimals=3){
   const tbody=document.getElementById(tbodyId);
   tbody.innerHTML='';
   const sp=spreadBps/100;
+  const step=decimals>=5?'0.00001':'0.001';
   segs.forEach((seg,i)=>{
     const base=typeof defaultFn==='function'?defaultFn(i):defaultFn;
+    const baseStr=base.toFixed(decimals);
+    const appliedStr=(base+sp).toFixed(decimals);
     tbody.innerHTML+=`<tr>
       <td>${i+1}구간</td>
       <td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td>
-      <td><input type="number" id="${tbodyId}-r${i}" value="${base.toFixed(3)}" step="0.001"
-        oninput="document.getElementById('${tbodyId}-a${i}').textContent=(+this.value+${sp}).toFixed(3)"/></td>
-      <td id="${tbodyId}-a${i}">${(base+sp).toFixed(3)}</td>
+      <td><input type="number" id="${tbodyId}-r${i}" value="${baseStr}" step="${step}"
+        oninput="document.getElementById('${tbodyId}-a${i}').textContent=(+this.value+${sp}).toFixed(${decimals})"/></td>
+      <td id="${tbodyId}-a${i}">${appliedStr}</td>
     </tr>`;
   });
 }
@@ -522,36 +527,39 @@ function buildScRates(){
   const s=new Date(document.getElementById('sc-s').value);
   const e=new Date(document.getElementById('sc-e').value);
   const segs=makePaySegs(s,e,1,false,true);
-  buildRateRows('sc-rate-body',segs,()=>3.67636,0);
+  buildRateRows('sc-rate-body',segs,()=>3.67636,0,5);
 }
 function buildHsbcRates(){
   const s=new Date(document.getElementById('hsbc-s').value);
   const e=new Date(document.getElementById('hsbc-e').value);
   const segs=makePaySegs(s,e,3,false,false);
-  buildRateRows('hsbc-rate-body',segs,()=>3.67636,0);
+  buildRateRows('hsbc-rate-body',segs,()=>3.67636,0,5);
 }
 
 // ── 공통 차입금 계산 ──
 function calcLoanGeneric(cfg){
-  const {paySegs,rateSegs,p,div,fx,payId,accId,hasFx,extraPayCols,extraAccCols,curPsDate,incEnd} = cfg;
+  const {paySegs,rateSegs,p,div,fx,payId,accId,hasFx,extraPayCols,extraAccCols,curPsDate,incEnd,isFac} = cfg;
   const fxVal=hasFx?+document.getElementById(fx).value||null:null;
+  // 계산함수: 시설대=ROUND 0자리, 외화=ROUNDDOWN 3자리
+  const calc=(v)=>isFac?roundFac(v):rd3(v);
+  const fmtAmt=(v)=>isFac?fmtInt(v):fmt3(v);
 
   // 납입 스케줄
   let payRows='',payTot=0;
   paySegs.forEach((seg,i)=>{
     const rs=rateSegs[i]; if(!rs) return;
     const d=daysCount(seg.start,seg.end,incEnd);
-    const iv=rd3(p*rs.rate*d/div); payTot+=iv;
+    const iv=calc(p*rs.rate*d/div); payTot+=iv;
     const isCur=curPsDate&&fmtD(seg.start)===curPsDate;
     let row=`<tr class="${isCur?'cur-period':''}"><td>${i+1}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${seg.payDate}</td>`;
     row+=extraPayCols(rs);
-    row+=`<td>${d}일</td><td class="td-r">${fmt3(iv)}</td>`;
+    row+=`<td>${d}일</td><td class="td-r">${fmtAmt(iv)}</td>`;
     if(hasFx) row+=`<td class="td-r">${fxVal?fmt0(iv*fxVal):'-'}</td>`;
     row+=`</tr>`;
     payRows+=row;
   });
   const hdr=extraPayCols(rateSegs[0]||{}).split('<td>').length-1;
-  payRows+=`<tr class="total-row"><td colspan="${3+hdr}">합계</td><td class="td-r">${fmt3(payTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(payTot*fxVal):'-'}</td>`:''}</tr>`;
+  payRows+=`<tr class="total-row"><td colspan="${3+hdr}">합계</td><td class="td-r">${fmtAmt(payTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(payTot*fxVal):'-'}</td>`:''}</tr>`;
   document.getElementById(payId).innerHTML=payRows;
 
   // 월결산 (이번 주기)
@@ -571,7 +579,7 @@ function calcLoanGeneric(cfg){
   accSegs.forEach(seg=>{
     // 월결산은 항상 말일까지 계산(말일산입) - 마지막 구간도 납입일까지
     const sd=daysCount(seg.start,seg.end,true);
-    const si=rd3(p*curRs.rate*sd/div); accTot+=si;
+    const si=calc(p*curRs.rate*sd/div); accTot+=si;
     const isPay=fmtD(seg.end)===curSeg.payDate;
     const isMonthEnd=fmtD(seg.end)===fmtD(monthEnd(seg.end));
     let row=`<tr class="${isPay?'pay-row':'acc-row'}"><td>${seg.month}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td>`;
@@ -646,7 +654,7 @@ function calcFac(){
     return {rate:(base+sp)/100,base,applied:(base+sp)};
   });
   calcLoanGeneric({paySegs,rateSegs,p,div:365,fx:null,payId:'fac-pay',accId:'fac-acc',hasFx:false,
-    curPsDate:psVal||null,incEnd:true,
+    curPsDate:psVal||null,incEnd:true,isFac:true,
     extraPayCols:rs=>`<td>${rs.base?.toFixed(3)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
     extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
 }
