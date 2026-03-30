@@ -54,7 +54,9 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 .fx-row label{font-size:11px;color:#666}
 .fx-row input{border:1px solid #ddd;border-radius:6px;padding:5px 8px;font-size:12px;width:130px;outline:none}
 .fx-hint{font-size:10px;color:#888}
-.notice{font-size:11px;color:#e07b00;background:#fff8e1;border-radius:6px;padding:8px 12px;margin-bottom:12px}
+.notice{font-size:11px;color:#555;background:#eef2f7;border-radius:6px;padding:10px 14px;margin-bottom:12px;line-height:1.8}
+.notice b{color:#1e3a5f}
+.notice .tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;margin:0 2px}
 .legend{display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#555}
 .legend-box{width:12px;height:12px;border-radius:3px}
@@ -64,7 +66,6 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 </head>
 <body>
 
-<!-- 비밀번호 -->
 <div id="pw-screen" style="position:fixed;inset:0;background:#1e3a5f;display:flex;align-items:center;justify-content:center;z-index:999">
   <div style="background:#fff;border-radius:14px;padding:40px 36px;text-align:center;width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
     <div style="font-size:28px;margin-bottom:8px">🔒</div>
@@ -79,7 +80,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 
 <header>
   <h1>사채/차입금 이자 계산 대시보드</h1>
-  <p>사채: 전체 납입 스케줄 · 차입금: 전체 스케줄(이번 주기 강조) + 월결산</p>
+  <p>사채: 전체 납입 스케줄 · 차입금: 전체 스케줄(이번 주기 강조) + 월결산 미지급비용</p>
 </header>
 
 <div class="top-tabs">
@@ -166,7 +167,11 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 
     <!-- 시설자금 -->
     <div id="loan-fac" class="panel active">
-      <div class="notice">변동금리 (국고채 1년 + 13bps) · KRW · <b>이자 = 원금 × 금리 × 일수 / 365</b> · 기산일: 개시일 익일 · 납입일 당일 포함 · 금리 업데이트: 매 1년 · 산업은행</div>
+      <div class="notice">
+        <b>산업은행 시설자금대출</b><br>
+        · 통화: KRW &nbsp;|&nbsp; 금리: 국고채 1년 + 13bps (매 1년 업데이트) &nbsp;|&nbsp; <b>이자납입일: 매월 12일</b><br>
+        · 기산일: <b>개시일 익일</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: 원금 × 금리 × 일수 / 365 &nbsp;|&nbsp; ROUNDDOWN 소수점 3자리
+      </div>
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#fce4ec;color:#c62828">KRW</span></div>
         <div class="grid4">
@@ -175,11 +180,11 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
           <div class="field"><label>이자주기</label>
             <select id="fac-freq"><option value="1" selected>매월</option><option value="3">분기</option></select>
           </div>
-          <div class="field"><label>이번 주기 시작일</label><input type="date" id="fac-ps" placeholder="납입일 익일"/></div>
+          <div class="field"><label>이번 주기 시작일 <span style="color:#e07b00">(납입일 익일)</span></label><input type="date" id="fac-ps"/></div>
           <div class="field"><label>원금 (KRW)</label><input type="number" id="fac-p" value="100000000000"/></div>
           <div class="field"><label>Spread (bps)</label><input type="number" id="fac-spread" value="13"/></div>
         </div>
-        <div class="rate-section-title">📊 연도별 국고채 1년 금리 예상치 (매년 실행일 기준 업데이트)</div>
+        <div class="rate-section-title">📊 연도별 국고채 1년 금리 예상치</div>
         <table class="rate-table">
           <thead><tr><th>구간</th><th>적용기간</th><th>국고채 1년 (%)</th><th>적용금리 (%)</th></tr></thead>
           <tbody id="fac-rate-body"></tbody>
@@ -202,7 +207,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="view-panel">
           <div class="legend">
             <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
-            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 (당월말까지)</div>
           </div>
           <table><thead><tr><th>결산월</th><th>인식기간</th><th>적용금리</th><th>일수</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
           <tbody id="fac-acc"></tbody></table>
@@ -213,18 +218,22 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 
     <!-- CACIB -->
     <div id="loan-cacib" class="panel">
-      <div class="notice">EURIBOR 1M + 57bps · EUR · <b>이자 = 원금 × 이율 × 일수 / 360</b> · 기산일: 개시일 익일 · 납입일 당일 포함 · 금리 업데이트: 매 1개월</div>
+      <div class="notice">
+        <b>CACIB Term Loan</b><br>
+        · 통화: EUR &nbsp;|&nbsp; 금리: EURIBOR 1M + 57bps (매 1개월 업데이트) &nbsp;|&nbsp; <b>이자납입일: 매월 23일</b> &nbsp;|&nbsp; 기준금리 확정: 실행일 2영업일 전<br>
+        · 기산일: <b>개시일 익일</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: 원금 × 금리 × 일수 / 360 &nbsp;|&nbsp; ROUNDDOWN 소수점 3자리
+      </div>
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#e8f5e9;color:#2e7d32">EUR</span></div>
         <div class="grid4">
           <div class="field"><label>실행일</label><input type="date" id="cac-s" value="2026-01-23"/></div>
           <div class="field"><label>만기일</label><input type="date" id="cac-e" value="2026-04-30"/></div>
-          <div class="field"><label>이번 주기 시작일</label><input type="date" id="cac-ps" placeholder="납입일 익일"/></div>
+          <div class="field"><label>이번 주기 시작일 <span style="color:#e07b00">(납입일 익일)</span></label><input type="date" id="cac-ps"/></div>
           <div class="field"><label>원금 (EUR)</label><input type="number" id="cac-p" value="563000000"/></div>
           <div class="field"><label>Spread (bps)</label><input type="number" id="cac-spread" value="57"/></div>
         </div>
         <div class="fx-row"><label>EUR/KRW 환율 (선택)</label><input type="number" id="cac-fx" placeholder="예: 1480"/><span class="fx-hint">입력 시 원화 환산</span></div>
-        <div class="rate-section-title">📊 월별 EURIBOR 1M 예상치 (기본값: 매월 +20bp 상승 가정)</div>
+        <div class="rate-section-title">📊 월별 EURIBOR 1M 예상치</div>
         <table class="rate-table">
           <thead><tr><th>구간</th><th>적용기간</th><th>EURIBOR 1M (%)</th><th>적용금리 (%)</th></tr></thead>
           <tbody id="cac-rate-body"></tbody>
@@ -247,7 +256,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="view-panel">
           <div class="legend">
             <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
-            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 (당월말까지)</div>
           </div>
           <table><thead><tr><th>결산월</th><th>인식기간</th><th>적용금리</th><th>일수</th><th>미지급비용 (EUR)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
           <tbody id="cac-acc"></tbody></table>
@@ -258,13 +267,17 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 
     <!-- SC -->
     <div id="loan-sc" class="panel">
-      <div class="notice">SOFR 1M + 40bps(0~1개월) / +45bps(이후) · USD · <b>이자 = 원금 × 이율 × 일수 / 360</b> · 기산일: 개시일 당일 포함 · 납입일 당일 포함 · 금리 업데이트: 매 1개월</div>
+      <div class="notice">
+        <b>SC Term Loan</b><br>
+        · 통화: USD &nbsp;|&nbsp; 금리: SOFR 1M + 40bps(0~1개월) / +45bps(이후) (매 1개월 업데이트) &nbsp;|&nbsp; <b>이자납입일: 매월 26일</b> &nbsp;|&nbsp; 기준금리 확정: 실행일<br>
+        · 기산일: <b>개시일 당일 포함</b> ~ 납입일 당일 포함 (<b>말일산입</b>) &nbsp;|&nbsp; 계산식: 원금 × 금리 × 일수 / 360 &nbsp;|&nbsp; ROUNDDOWN 소수점 3자리
+      </div>
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#e3f0ff;color:#1565c0">USD</span></div>
         <div class="grid4">
           <div class="field"><label>실행일</label><input type="date" id="sc-s" value="2026-03-26"/></div>
           <div class="field"><label>만기일</label><input type="date" id="sc-e" value="2026-06-25"/></div>
-          <div class="field"><label>이번 주기 시작일</label><input type="date" id="sc-ps" placeholder="이전 납입일 익일"/></div>
+          <div class="field"><label>이번 주기 시작일 <span style="color:#e07b00">(이전 납입일 익일)</span></label><input type="date" id="sc-ps"/></div>
           <div class="field"><label>원금 (USD)</label><input type="number" id="sc-p" value="500000000"/></div>
           <div class="field"><label>Spread 0~1개월 (bps)</label><input type="number" id="sc-sp1" value="40"/></div>
           <div class="field"><label>Spread 1개월~만기 (bps)</label><input type="number" id="sc-sp2" value="45"/></div>
@@ -293,7 +306,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="view-panel">
           <div class="legend">
             <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
-            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 (당월말까지)</div>
           </div>
           <table><thead><tr><th>결산월</th><th>인식기간</th><th>적용금리</th><th>일수</th><th>미지급비용 (USD)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
           <tbody id="sc-acc"></tbody></table>
@@ -304,13 +317,17 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
 
     <!-- HSBC -->
     <div id="loan-hsbc" class="panel">
-      <div class="notice">SOFR 3M + 55bps · USD · <b>이자 = 원금 × 이율 × 일수 / 360</b> · 기산일: 개시일 당일 포함 · 납입일 당일 포함 · 금리 업데이트: 매 3개월</div>
+      <div class="notice">
+        <b>HSBC Term Loan</b><br>
+        · 통화: USD &nbsp;|&nbsp; 금리: SOFR 3M + 55bps (매 3개월 업데이트) &nbsp;|&nbsp; <b>이자납입일: 매 3개월 26일</b> &nbsp;|&nbsp; 기준금리 확정: 실행일<br>
+        · 기산일: <b>개시일 당일 포함</b> ~ 납입일 당일 <b>불포함</b> (<b>말일불산입</b>) &nbsp;|&nbsp; 계산식: 원금 × 금리 × 일수 / 360 &nbsp;|&nbsp; ROUNDDOWN 소수점 3자리
+      </div>
       <div class="card">
         <div class="card-title">기본 조건 <span class="badge" style="background:#e3f0ff;color:#1565c0">USD</span></div>
         <div class="grid4">
           <div class="field"><label>실행일</label><input type="date" id="hsbc-s" value="2026-03-26"/></div>
           <div class="field"><label>만기일</label><input type="date" id="hsbc-e" value="2027-03-26"/></div>
-          <div class="field"><label>이번 주기 시작일</label><input type="date" id="hsbc-ps" placeholder="이전 납입일 익일"/></div>
+          <div class="field"><label>이번 주기 시작일 <span style="color:#e07b00">(이전 납입일)</span></label><input type="date" id="hsbc-ps"/></div>
           <div class="field"><label>원금 (USD)</label><input type="number" id="hsbc-p" value="300000000"/></div>
           <div class="field"><label>Spread (bps)</label><input type="number" id="hsbc-spread" value="55"/></div>
         </div>
@@ -338,7 +355,7 @@ button.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-we
         <div class="view-panel">
           <div class="legend">
             <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div>납입월</div>
-            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f3f0ff"></div>미지급비용 (당월말까지)</div>
           </div>
           <table><thead><tr><th>결산월</th><th>인식기간</th><th>적용금리</th><th>일수</th><th>미지급비용 (USD)</th><th>미지급비용 (KRW)</th><th>비고</th></tr></thead>
           <tbody id="hsbc-acc"></tbody></table>
@@ -396,32 +413,40 @@ const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
 const monthEnd=d=>new Date(d.getFullYear(),d.getMonth()+1,0);
 const ym=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 
-// 일수: 양끝 포함 (말일산입)
-function daysInc(a,b){return Math.round((new Date(b)-new Date(a))/86400000)+1;}
+// 일수 계산
+// inc=true: 양끝포함(말일산입), inc=false: 시작포함 종료제외(말일불산입)
+function daysCount(a,b,inc){
+  const diff=Math.round((new Date(b)-new Date(a))/86400000);
+  return inc?diff+1:diff;
+}
 
 // 납입 구간 생성
-//익일모드(nextDay=true): 실행일 익일~첫납입일, 이후 납입일 익일~다음납입일
-// 당일모드(nextDay=false): 실행일~첫납입일, 이후 납입일 익일~다음납입일 (SC/HSBC: 첫구간만 당일포함)
-function makePaySegs(startDate, endDate, freqM, nextDay){
-  const segs=[], endD=new Date(endDate);
+// nextDay=true: 기산일=실행일+1 (시설/CACIB)
+// nextDay=false: 기산일=실행일 (SC/HSBC)
+// incEnd=true: 납입일 포함(말일산입), incEnd=false: 납입일 제외(말일불산입)
+function makePaySegs(startDate, endDate, freqM, nextDay, incEnd){
+  const endD=new Date(endDate);
   if(freqM===0){
     const s=nextDay?addDays(startDate,1):new Date(startDate);
-    return [{start:s, end:new Date(endD), payDate:fmtD(endD)}];
+    return [{start:s,end:new Date(endD),payDate:fmtD(endD),incEnd}];
   }
-  let payDate=addMonths(new Date(startDate), freqM); // 첫 납입일
-  let segStart=nextDay?addDays(startDate,1):new Date(startDate); // 기산일
+  const segs=[];
+  let payDate=addMonths(new Date(startDate),freqM);
+  let segStart=nextDay?addDays(new Date(startDate),1):new Date(startDate);
   while(segStart<=endD){
     const pe=payDate<=endD?new Date(payDate):new Date(endD);
-    segs.push({start:new Date(segStart), end:new Date(pe), payDate:fmtD(pe)});
-    segStart=addDays(pe,1); // 다음구간 시작 = 납입일 익일
-    payDate=addMonths(payDate, freqM);
+    segs.push({start:new Date(segStart),end:new Date(pe),payDate:fmtD(pe),incEnd});
+    segStart=addDays(pe,1);
+    payDate=addMonths(payDate,freqM);
   }
   return segs;
 }
 
-// 월결산 구간 (1일~말일, 첫구간=시작일~당월말)
+// 월결산 구간: 항상 1일~말일 기준, 첫구간=시작일~당월말
+// 마지막 구간 = 마지막 납입일까지 (말일이 아닐 수 있음)
 function makeAccSegs(start,end){
-  const segs=[],endD=new Date(end); let cur=new Date(start);
+  const segs=[],endD=new Date(end);
+  let cur=new Date(start);
   while(cur<=endD){
     const me=monthEnd(cur);
     const se=me<endD?new Date(me):new Date(endD);
@@ -444,19 +469,18 @@ function copyActiveView(panelId){
 }
 
 // ── 금리구간 테이블 생성 ──
-function buildRateRows(tbodyId, segs, defaultRateFn, spreadBps){
+function buildRateRows(tbodyId,segs,defaultFn,spreadBps){
   const tbody=document.getElementById(tbodyId);
   tbody.innerHTML='';
+  const sp=spreadBps/100;
   segs.forEach((seg,i)=>{
-    const base=typeof defaultRateFn==='function'?defaultRateFn(i):defaultRateFn;
-    const sp=spreadBps/100;
-    const applied=(base+sp).toFixed(3);
+    const base=typeof defaultFn==='function'?defaultFn(i):defaultFn;
     tbody.innerHTML+=`<tr>
       <td>${i+1}구간</td>
       <td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td>
       <td><input type="number" id="${tbodyId}-r${i}" value="${base.toFixed(3)}" step="0.001"
         oninput="document.getElementById('${tbodyId}-a${i}').textContent=(+this.value+${sp}).toFixed(3)"/></td>
-      <td id="${tbodyId}-a${i}">${applied}</td>
+      <td id="${tbodyId}-a${i}">${(base+sp).toFixed(3)}</td>
     </tr>`;
   });
 }
@@ -465,8 +489,7 @@ function buildFacRates(){
   const s=new Date(document.getElementById('fac-s').value);
   const e=new Date(document.getElementById('fac-e').value);
   const sp=+document.getElementById('fac-spread').value;
-  // 1년 단위 구간
-  const segs=makePaySegs(s,e,12,false);
+  const segs=makePaySegs(s,e,12,true,true);
   const defaults=[2.51,2.53,2.58];
   buildRateRows('fac-rate-body',segs,i=>defaults[i]??2.58,sp);
 }
@@ -474,32 +497,33 @@ function buildCacRates(){
   const s=new Date(document.getElementById('cac-s').value);
   const e=new Date(document.getElementById('cac-e').value);
   const sp=+document.getElementById('cac-spread').value;
-  const segs=makePaySegs(s,e,1,true);
-  buildRateRows('cac-rate-body',segs,i=>+(2.0+i*0.20).toFixed(3),sp);
+  const segs=makePaySegs(s,e,1,true,true);
+  const defaults=[1.956,1.930,2.130,2.330];
+  buildRateRows('cac-rate-body',segs,i=>defaults[i]??+(2.0+i*0.20).toFixed(3),sp);
 }
 function buildScRates(){
   const s=new Date(document.getElementById('sc-s').value);
   const e=new Date(document.getElementById('sc-e').value);
-  const segs=makePaySegs(s,e,1,false);
-  buildRateRows('sc-rate-body',segs,()=>3.676,0);
+  const segs=makePaySegs(s,e,1,false,true);
+  buildRateRows('sc-rate-body',segs,()=>3.67636,0);
 }
 function buildHsbcRates(){
   const s=new Date(document.getElementById('hsbc-s').value);
   const e=new Date(document.getElementById('hsbc-e').value);
-  const segs=makePaySegs(s,e,3,false);
-  buildRateRows('hsbc-rate-body',segs,()=>3.676,0);
+  const segs=makePaySegs(s,e,3,false,false);
+  buildRateRows('hsbc-rate-body',segs,()=>3.67636,0);
 }
 
 // ── 공통 차입금 계산 ──
 function calcLoanGeneric(cfg){
-  const {startId,endId,psId,paySegs,rateSegs,p,div,fx,payId,accId,hasFx,extraPayCols,extraAccCols,curPsDate} = cfg;
+  const {paySegs,rateSegs,p,div,fx,payId,accId,hasFx,extraPayCols,extraAccCols,curPsDate,incEnd} = cfg;
+  const fxVal=hasFx?+document.getElementById(fx).value||null:null;
 
   // 납입 스케줄
   let payRows='',payTot=0;
-  const fxVal=hasFx?+document.getElementById(fx).value||null:null;
   paySegs.forEach((seg,i)=>{
     const rs=rateSegs[i]; if(!rs) return;
-    const d=daysInc(seg.start,seg.end);
+    const d=daysCount(seg.start,seg.end,incEnd);
     const iv=rd3(p*rs.rate*d/div); payTot+=iv;
     const isCur=curPsDate&&fmtD(seg.start)===curPsDate;
     let row=`<tr class="${isCur?'cur-period':''}"><td>${i+1}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${seg.payDate}</td>`;
@@ -509,33 +533,39 @@ function calcLoanGeneric(cfg){
     row+=`</tr>`;
     payRows+=row;
   });
-  const colspan=3+extraPayCols(rateSegs[0]||{}).split('<td>').length-1;
-  payRows+=`<tr class="total-row"><td colspan="${colspan}">합계</td><td class="td-r">${fmt3(payTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(payTot*fxVal):'-'}</td>`:''}</tr>`;
+  const hdr=extraPayCols(rateSegs[0]||{}).split('<td>').length-1;
+  payRows+=`<tr class="total-row"><td colspan="${3+hdr}">합계</td><td class="td-r">${fmt3(payTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(payTot*fxVal):'-'}</td>`:''}</tr>`;
   document.getElementById(payId).innerHTML=payRows;
 
-  // 월결산 (이번 주기만)
+  // 월결산 (이번 주기)
   if(!curPsDate){
     document.getElementById(accId).innerHTML='<tr><td colspan="10" style="color:#aaa;padding:16px;text-align:center">이번 주기 시작일을 입력하세요</td></tr>';
     return;
   }
   const curIdx=paySegs.findIndex(s=>fmtD(s.start)===curPsDate);
-  if(curIdx<0){document.getElementById(accId).innerHTML='<tr><td colspan="10" style="color:#e53935;padding:16px;text-align:center">이번 주기 시작일이 스케줄에 없습니다</td></tr>';return;}
+  if(curIdx<0){
+    document.getElementById(accId).innerHTML='<tr><td colspan="10" style="color:#e53935;padding:16px;text-align:center">이번 주기 시작일이 스케줄에 없습니다</td></tr>';
+    return;
+  }
   const curSeg=paySegs[curIdx], curRs=rateSegs[curIdx];
+  // 월결산: 시작일~당월말, 다음달1일~납입일 순으로
   const accSegs=makeAccSegs(curSeg.start,curSeg.end);
   let accRows='',accTot=0;
   accSegs.forEach(seg=>{
-    const sd=daysInc(seg.start,seg.end);
+    // 월결산은 항상 말일까지 계산(말일산입) - 마지막 구간도 납입일까지
+    const sd=daysCount(seg.start,seg.end,true);
     const si=rd3(p*curRs.rate*sd/div); accTot+=si;
     const isPay=fmtD(seg.end)===curSeg.payDate;
+    const isMonthEnd=fmtD(seg.end)===fmtD(monthEnd(seg.end));
     let row=`<tr class="${isPay?'pay-row':'acc-row'}"><td>${seg.month}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td>`;
     row+=extraAccCols(curRs);
     row+=`<td>${sd}일</td><td class="td-r">${fmt3(si)}</td>`;
     if(hasFx) row+=`<td class="td-r">${fxVal?fmt0(si*fxVal):'-'}</td>`;
-    row+=`<td>${isPay?'납입월':'미지급비용'}</td></tr>`;
+    row+=`<td>${isPay?'납입월':(isMonthEnd?'미지급비용':'미지급비용')}</td></tr>`;
     accRows+=row;
   });
-  const aColspan=2+extraAccCols(curRs).split('<td>').length-1;
-  accRows+=`<tr class="total-row"><td colspan="${aColspan}">합계</td><td class="td-r">${fmt3(accTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(accTot*fxVal):'-'}</td>`:''}<td></td></tr>`;
+  const aHdr=extraAccCols(curRs).split('<td>').length-1;
+  accRows+=`<tr class="total-row"><td colspan="${2+aHdr}">합계</td><td class="td-r">${fmt3(accTot)}</td>${hasFx?`<td class="td-r">${fxVal?fmt0(accTot*fxVal):'-'}</td>`:''}<td></td></tr>`;
   document.getElementById(accId).innerHTML=accRows;
 }
 
@@ -549,11 +579,11 @@ function calcGongmo(){
   const p2=+document.getElementById('gm2-p').value,r2=+document.getElementById('gm2-r').value/100;
   const perYear=freq===0?1:12/freq;
   const maxE=e1>e2?e1:e2;
-  const segs=makePaySegs(s,maxE,freq,false);
+  const segs=makePaySegs(s,maxE,freq,false,true);
   let rows='',tot1=0,tot2=0;
   segs.forEach((seg,i)=>{
-    const i1=seg.start<e1?(freq===0?rd3(p1*r1):rd3(p1*r1/perYear)):0;
-    const i2=seg.start<e2?(freq===0?rd3(p2*r2):rd3(p2*r2/perYear)):0;
+    const i1=seg.start<=e1?(freq===0?rd3(p1*r1):rd3(p1*r1/perYear)):0;
+    const i2=seg.start<=e2?(freq===0?rd3(p2*r2):rd3(p2*r2/perYear)):0;
     if(!i1&&!i2) return;
     tot1+=i1; tot2+=i2;
     rows+=`<tr class="pay-row"><td>${i+1}</td><td>${fmtD(seg.start)} ~ ${fmtD(seg.end)}</td><td>${seg.payDate}</td><td class="td-r">${i1?fmt3(i1):'-'}</td><td class="td-r">${i2?fmt3(i2):'-'}</td><td class="td-r">${fmt3(i1+i2)}</td></tr>`;
@@ -570,7 +600,7 @@ function calcSamurai(){
   const tr=[1,2,3,4].map(i=>({p:+document.getElementById(`sam${i}-p`).value,r:+document.getElementById(`sam${i}-r`).value/100,e:new Date(document.getElementById(`sam${i}-e`).value)}));
   const perYear=freq===0?1:12/freq;
   const maxE=tr.reduce((m,t)=>t.e>m?t.e:m,tr[0].e);
-  const segs=makePaySegs(s,maxE,freq,false);
+  const segs=makePaySegs(s,maxE,freq,false,true);
   let rows='',totals=new Array(4).fill(0),grand=0;
   segs.forEach((seg,idx)=>{
     const iArr=tr.map(t=>seg.start<=t.e?(freq===0?rd3(t.p*t.r):rd3(t.p*t.r/perYear)):0);
@@ -582,7 +612,7 @@ function calcSamurai(){
   document.getElementById('sam-result').innerHTML=rows;
 }
 
-// ══ 시설자금 (익일기산) ══
+// ══ 시설자금 (익일기산, 말일산입) ══
 function calcFac(){
   const s=new Date(document.getElementById('fac-s').value);
   const e=new Date(document.getElementById('fac-e').value);
@@ -590,43 +620,39 @@ function calcFac(){
   const freq=+document.getElementById('fac-freq').value;
   const p=+document.getElementById('fac-p').value;
   const sp=+document.getElementById('fac-spread').value/100;
-  const paySegs=makePaySegs(s,e,freq,true); // 익일기산
-  const yearSegs=makePaySegs(s,e,12,true);
+  const paySegs=makePaySegs(s,e,freq,true,true);
+  const yearSegs=makePaySegs(s,e,12,true,true);
   const rateSegs=paySegs.map(seg=>{
     const yi=yearSegs.findIndex(ys=>new Date(seg.start)>=new Date(ys.start)&&new Date(seg.start)<=new Date(ys.end));
-    const idx=Math.max(0,yi);
+    const idx=Math.max(0,yi>=0?yi:yearSegs.length-1);
     const base=+document.getElementById(`fac-rate-body-r${idx}`)?.value||2.51;
-    return {rate:(base+sp)/100, base, applied:(base+sp)};
+    return {rate:(base+sp)/100,base,applied:(base+sp)};
   });
-  calcLoanGeneric({
-    paySegs,rateSegs,p,div:365,fx:null,payId:'fac-pay',accId:'fac-acc',hasFx:false,
-    curPsDate:psVal||null,
+  calcLoanGeneric({paySegs,rateSegs,p,div:365,fx:null,payId:'fac-pay',accId:'fac-acc',hasFx:false,
+    curPsDate:psVal||null,incEnd:true,
     extraPayCols:rs=>`<td>${rs.base?.toFixed(3)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`
-  });
+    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
 }
 
-// ══ CACIB (익일기산) ══
+// ══ CACIB (익일기산, 말일산입) ══
 function calcCac(){
   const s=new Date(document.getElementById('cac-s').value);
   const e=new Date(document.getElementById('cac-e').value);
   const psVal=document.getElementById('cac-ps').value;
   const p=+document.getElementById('cac-p').value;
   const sp=+document.getElementById('cac-spread').value/100;
-  const paySegs=makePaySegs(s,e,1,true); // 익일기산
+  const paySegs=makePaySegs(s,e,1,true,true);
   const rateSegs=paySegs.map((seg,i)=>{
-    const base=+document.getElementById(`cac-rate-body-r${i}`)?.value||2.0;
-    return {rate:(base+sp)/100, base, applied:(base+sp)};
+    const base=+document.getElementById(`cac-rate-body-r${i}`)?.value||1.956;
+    return {rate:(base+sp)/100,base,applied:(base+sp)};
   });
-  calcLoanGeneric({
-    paySegs,rateSegs,p,div:360,fx:'cac-fx',payId:'cac-pay',accId:'cac-acc',hasFx:true,
-    curPsDate:psVal||null,
+  calcLoanGeneric({paySegs,rateSegs,p,div:360,fx:'cac-fx',payId:'cac-pay',accId:'cac-acc',hasFx:true,
+    curPsDate:psVal||null,incEnd:true,
     extraPayCols:rs=>`<td>${rs.base?.toFixed(3)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`
-  });
+    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
 }
 
-// ══ SC (당일기산) ══
+// ══ SC (당일기산, 말일산입) ══
 function calcSC(){
   const s=new Date(document.getElementById('sc-s').value);
   const e=new Date(document.getElementById('sc-e').value);
@@ -635,38 +661,34 @@ function calcSC(){
   const sp1=+document.getElementById('sc-sp1').value/100;
   const sp2=+document.getElementById('sc-sp2').value/100;
   const m1e=addMonths(s,1);
-  const paySegs=makePaySegs(s,e,1,false); // 당일기산
+  const paySegs=makePaySegs(s,e,1,false,true);
   const rateSegs=paySegs.map((seg,i)=>{
-    const sofr=+document.getElementById(`sc-rate-body-r${i}`)?.value||3.676;
+    const sofr=+document.getElementById(`sc-rate-body-r${i}`)?.value||3.67636;
     const sp=new Date(seg.start)<=m1e?sp1:sp2;
-    return {rate:(sofr+sp)/100, base:sofr, applied:(sofr+sp)};
+    return {rate:(sofr+sp)/100,base:sofr,applied:(sofr+sp)};
   });
-  calcLoanGeneric({
-    paySegs,rateSegs,p,div:360,fx:'sc-fx',payId:'sc-pay',accId:'sc-acc',hasFx:true,
-    curPsDate:psVal||null,
-    extraPayCols:rs=>`<td>${rs.base?.toFixed(3)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`
-  });
+  calcLoanGeneric({paySegs,rateSegs,p,div:360,fx:'sc-fx',payId:'sc-pay',accId:'sc-acc',hasFx:true,
+    curPsDate:psVal||null,incEnd:true,
+    extraPayCols:rs=>`<td>${rs.base?.toFixed(5)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
+    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
 }
 
-// ══ HSBC (당일기산) ══
+// ══ HSBC (당일기산, 말일불산입) ══
 function calcHSBC(){
   const s=new Date(document.getElementById('hsbc-s').value);
   const e=new Date(document.getElementById('hsbc-e').value);
   const psVal=document.getElementById('hsbc-ps').value;
   const p=+document.getElementById('hsbc-p').value;
   const sp=+document.getElementById('hsbc-spread').value/100;
-  const paySegs=makePaySegs(s,e,3,false); // 당일기산
+  const paySegs=makePaySegs(s,e,3,false,false);
   const rateSegs=paySegs.map((seg,i)=>{
-    const sofr=+document.getElementById(`hsbc-rate-body-r${i}`)?.value||3.676;
-    return {rate:(sofr+sp)/100, base:sofr, applied:(sofr+sp)};
+    const sofr=+document.getElementById(`hsbc-rate-body-r${i}`)?.value||3.67636;
+    return {rate:(sofr+sp)/100,base:sofr,applied:(sofr+sp)};
   });
-  calcLoanGeneric({
-    paySegs,rateSegs,p,div:360,fx:'hsbc-fx',payId:'hsbc-pay',accId:'hsbc-acc',hasFx:true,
-    curPsDate:psVal||null,
-    extraPayCols:rs=>`<td>${rs.base?.toFixed(3)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
-    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`
-  });
+  calcLoanGeneric({paySegs,rateSegs,p,div:360,fx:'hsbc-fx',payId:'hsbc-pay',accId:'hsbc-acc',hasFx:true,
+    curPsDate:psVal||null,incEnd:false,
+    extraPayCols:rs=>`<td>${rs.base?.toFixed(5)||'-'}%</td><td>${rs.applied?.toFixed(3)||'-'}%</td>`,
+    extraAccCols:rs=>`<td>${rs.applied?.toFixed(3)||'-'}%</td>`});
 }
 </script>
 </body>
