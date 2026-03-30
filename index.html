@@ -472,9 +472,9 @@ function makeHsbcPaySegs(startDate, endDate, freqM) {
       segs.push({start: new Date(cur), end: new Date(endD), payDate: fmtD(endD), incEnd: true});
       break;
     } else {
-      // 중간 구간: cur ~ nextPay-1 (말일불산입)
+      // 중간 구간: cur ~ nextPay-1, 양끝포함 계산 (납입일은 이미 제외됨)
       const segEnd = addDays(nextPay, -1);
-      segs.push({start: new Date(cur), end: new Date(segEnd), payDate: fmtD(nextPay), incEnd: false});
+      segs.push({start: new Date(cur), end: new Date(segEnd), payDate: fmtD(nextPay), incEnd: true});
       cur = new Date(nextPay);
     }
   }
