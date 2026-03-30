@@ -631,7 +631,7 @@ function calcLoanGeneric(cfg) {
     const si = calc(p * curRs.rate * sd / div);
     accTot += si;
     accDays += sd;
-    const isPay = fmtD(seg.end) === curSeg.payDate;
+    const isPay = fmtD(seg.end) === curSeg.payDate || fmtD(seg.end) === fmtD(dateOnly(curSeg.end));
     let row = '<tr class="' + (isPay ? 'pay-row' : 'acc-row') + '">' +
       '<td>' + seg.month + '</td>' +
       '<td>' + fmtD(seg.start) + ' ~ ' + fmtD(seg.end) + '</td>' +
